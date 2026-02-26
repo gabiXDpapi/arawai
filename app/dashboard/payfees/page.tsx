@@ -110,7 +110,7 @@ export default function PayFeesPage() {
             <div className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
                 <div className="mb-10 flex flex-col sm:flex-row sm:items-center gap-4">
                     <Link
-                        href="/dashboard/status"
+                        href="/dashboard"
                         className="w-12 h-12 bg-white rounded-2xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-accent hover:border-accent/20 hover:shadow-lg hover:shadow-accent/5 transition-all group"
                     >
                         <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
