@@ -63,7 +63,7 @@ export default function DashboardPage() {
       details: {
         number: 'OR-2026-0422',
         date: 'Feb 22, 2026',
-        amount: '₱12,450.00',
+        amount: '₱550.00',
         method: 'GCash',
         location: 'Cashier Window 3',
         timeline: [
