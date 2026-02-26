@@ -8,7 +8,8 @@ import {
   LogOut,
   Bell,
   LayoutDashboard,
-  MessageSquare
+  MessageSquare,
+  CreditCard
 } from 'lucide-react';
 import Link from 'next/link';
 import { StudentChatbot } from '@/components/student-chatbot';
@@ -42,10 +43,18 @@ export default function StudentDashboardPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard/status"
-              className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-accent/10 text-accent-foreground hover:bg-accent/20 rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-accent/20 shadow-sm"
+              className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-accent/10 hover:text-accent-foreground rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-accent/20 shadow-sm"
             >
               <LayoutDashboard className="w-4 h-4" />
               Document Status
+            </Link>
+
+            <Link
+              href="/dashboard/payfees"
+              className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-accent/10 hover:text-accent-foreground rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-accent/20 shadow-sm"
+            >
+              <CreditCard className="w-4 h-4" />
+              Pay Fees
             </Link>
 
             <div className="h-8 w-[1px] bg-slate-200 mx-2 hidden sm:block"></div>
