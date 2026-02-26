@@ -10,10 +10,11 @@ export type DocumentType = {
 };
 
 export const DOCUMENT_TYPES: DocumentType[] = [
-  { id: 'cor_ecopy', label: 'COR (e-copy)', description: 'Certificate of Registration electronic copy', price: 50 },
-  { id: 'cor_validation', label: 'COR (Validation)', description: 'Certificate of Registration for validation', price: 50 },
-  { id: 'cog', label: 'Certificate of Grades (COG)', description: 'Official copy of your grades', price: 100 },
-  { id: 'tor', label: 'Transcript of Records (TOR)', description: 'Complete academic record', price: 150 },
+  { id: 'cor_ecopy', label: 'COR (e-copy)', description: 'Certificate of Registration electronic copy', price: 0 },
+  { id: 'cor_validation', label: 'COR (Validation)', description: 'Certificate of Registration for validation', price: 15 },
+  { id: 'cog', label: 'Certificate of Grades (COG)', description: 'Official copy of your grades', price: 50 },
+  { id: 'tor', label: 'Transcript of Records (TOR)', description: 'Complete academic record', price: 430 },
+  { id: 'tc', label: 'Transfer Credentials (TC)', description: 'Complete academic record', price: 630 },
 ];
 
 interface DocumentSelectionProps {
@@ -25,7 +26,7 @@ interface DocumentSelectionProps {
 
 export function DocumentSelection({ selectedDocs, toggleDocument, totalAmount, onNext }: DocumentSelectionProps) {
   return (
-    <motion.div 
+    <motion.div
       key="step1"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -41,17 +42,15 @@ export function DocumentSelection({ selectedDocs, toggleDocument, totalAmount, o
         {DOCUMENT_TYPES.map((doc) => {
           const isSelected = selectedDocs.includes(doc.id);
           return (
-            <div 
+            <div
               key={doc.id}
               onClick={() => toggleDocument(doc.id)}
-              className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${
-                isSelected ? 'border-emerald-500 bg-emerald-50/50 shadow-sm shadow-emerald-100' : 'border-slate-200 hover:border-emerald-200 hover:bg-slate-50'
-              }`}
+              className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${isSelected ? 'border-emerald-500 bg-emerald-50/50 shadow-sm shadow-emerald-100' : 'border-slate-200 hover:border-emerald-200 hover:bg-slate-50'
+                }`}
             >
               <div className="flex items-center gap-4">
-                <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${
-                  isSelected ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-slate-300'
-                }`}>
+                <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-slate-300'
+                  }`}>
                   {isSelected && <Check className="w-4 h-4" />}
                 </div>
                 <div>
@@ -73,7 +72,7 @@ export function DocumentSelection({ selectedDocs, toggleDocument, totalAmount, o
         <div className="text-slate-500">
           Total Amount: <span className="text-2xl font-black text-slate-900 ml-2">₱{totalAmount.toFixed(2)}</span>
         </div>
-        <button 
+        <button
           onClick={onNext}
           disabled={selectedDocs.length === 0}
           className="px-6 py-3 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-600 transition-all shadow-sm hover:shadow-emerald-200/50 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
