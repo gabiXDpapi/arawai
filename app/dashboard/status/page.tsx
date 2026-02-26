@@ -326,10 +326,13 @@ export default function DashboardPage() {
                   <FileText className="w-6 h-6 mb-2 text-slate-400 group-hover:text-accent" />
                   <span className="text-xs font-bold">Request Doc</span>
                 </Link>
-                <button className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[24px] hover:bg-accent/10 hover:text-accent-foreground transition-all border border-transparent hover:border-accent/20 group">
+                <Link
+                  href="/dashboard/payfees"
+                  className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[24px] hover:bg-accent/10 hover:text-accent-foreground transition-all border border-transparent hover:border-accent/20 group text-center w-full"
+                >
                   <CreditCard className="w-6 h-6 mb-2 text-slate-400 group-hover:text-accent" />
                   <span className="text-xs font-bold">Pay Fees</span>
-                </button>
+                </Link>
               </div>
             </section>
           </div>
