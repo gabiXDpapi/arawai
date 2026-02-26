@@ -579,11 +579,7 @@ export default function DashboardPage() {
                             <CreditCard className="w-4 h-4" /> Online
                           </button>
                         </>
-                      ) : selectedItem.id !== 3 && (
-                        <button className={`flex-[1.5] py-4 ${selectedItem.color} text-white font-black rounded-2xl shadow-xl hover:brightness-110 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2`}>
-                          <ExternalLink className="w-4 h-4" /> View Full Details
-                        </button>
-                      )}
+                      ) : null}
                     </div>
                     <p className="text-[10px] text-center text-slate-400 mt-6 font-bold uppercase tracking-[0.2em]">ARAW.ai Security Verified</p>
                   </div>
