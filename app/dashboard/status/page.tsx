@@ -83,7 +83,7 @@ export default function DashboardPage() {
               <MessageSquare className="w-5 h-5" />
             </Link>
 
-            <Link href="/" className="flex items-center gap-3 group">
+            <Link href="/dashboard" className="flex items-center gap-3 group">
               <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-accent/20 group-hover:scale-105 transition-transform border border-slate-100">
                 <Logo width={28} height={28} />
               </div>
