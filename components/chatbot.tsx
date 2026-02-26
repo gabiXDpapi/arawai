@@ -7,7 +7,7 @@ import { GoogleGenAI } from '@google/genai';
 import ReactMarkdown from 'react-markdown';
 
 // Initialize Gemini API
-const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+// const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
 
 type Message = {
   id: string;
@@ -120,8 +120,12 @@ export function Chatbot() {
     // Initialize chat session
     const initChat = async () => {
       try {
-        const chat = ai.chats.create({
-          model: 'gemini-3-flash-preview',
+        const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+        if (!apiKey) return;
+
+        const aiInstance = new GoogleGenAI({ apiKey });
+        const chat = aiInstance.chats.create({
+          model: 'gemini-flash-latest',
           config: {
             systemInstruction: SYSTEM_INSTRUCTION,
             temperature: 0.7,
@@ -145,7 +149,7 @@ export function Chatbot() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading || !chatSession) return;
+    if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
     setInput('');
@@ -153,19 +157,47 @@ export function Chatbot() {
     setIsLoading(true);
 
     try {
-      const response = await chatSession.sendMessage({ message: userMessage });
+      // Create a fresh instance for each request as per guidelines
+      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error('API key is missing. Please ensure NEXT_PUBLIC_GEMINI_API_KEY is set.');
+      }
+      
+      const aiInstance = new GoogleGenAI({ apiKey });
+      
+      // If we don't have a session yet, or we want to ensure it's fresh
+      let currentSession = chatSession;
+      if (!currentSession) {
+        currentSession = aiInstance.chats.create({
+          model: 'gemini-flash-latest',
+          config: {
+            systemInstruction: SYSTEM_INSTRUCTION,
+            temperature: 0.7,
+          },
+        });
+        setChatSession(currentSession);
+      }
+
+      const response = await currentSession.sendMessage({ message: userMessage });
       setMessages((prev) => [
         ...prev,
         { id: (Date.now() + 1).toString(), role: 'assistant', content: response.text },
       ]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending message:', error);
+      
+      let errorMessage = 'I apologize, but I encountered an error processing your request. Please try again later.';
+      
+      if (error.message?.includes('403') || error.status === 403) {
+        errorMessage = 'I am having trouble accessing the AI service (Permission Denied). This usually means the API key is restricted or invalid for this model. Please check your configuration.';
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: 'I apologize, but I encountered an error processing your request. Please try again later.',
+          content: errorMessage,
         },
       ]);
     } finally {
