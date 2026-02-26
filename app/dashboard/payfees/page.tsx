@@ -16,7 +16,9 @@ import {
     Bell,
     LogOut,
     MessageSquare,
-    ExternalLink
+    ExternalLink,
+    MapPin,
+    Users
 } from 'lucide-react';
 import Link from 'next/link';
 import { GCashPayment } from '@/components/GCashPayment';
@@ -26,6 +28,10 @@ export default function PayFeesPage() {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [showPayment, setShowPayment] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [showManualSuccess, setShowManualSuccess] = useState(false);
+    const [userTicket, setUserTicket] = useState<number | null>(null);
+    const [nextTicketNumber, setNextTicketNumber] = useState(155);
+    const [priorityNumber, setPriorityNumber] = useState(142);
 
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -217,28 +223,37 @@ export default function PayFeesPage() {
                                                     onClick={() => setShowPayment(true)}
                                                     className="flex items-center justify-between p-5 bg-white border-2 border-slate-100 rounded-3xl hover:border-accent hover:bg-accent/5 group transition-all"
                                                 >
-                                                    <div className="flex items-center gap-4">
+                                                    <div className="flex items-center gap-4 text-left">
                                                         <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110">
                                                             <Smartphone className="w-6 h-6" />
                                                         </div>
-                                                        <div className="text-left">
-                                                            <p className="text-sm font-black text-slate-900">GCash / Mobile Wallet</p>
-                                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Instant Settlement</p>
+                                                        <div>
+                                                            <p className="text-sm font-black text-slate-900">Online Payment</p>
+                                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">GCash / Mobile Wallet</p>
                                                         </div>
                                                     </div>
                                                     <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-accent" />
                                                 </button>
 
-                                                <button className="flex items-center justify-between p-5 bg-white border-2 border-slate-100 rounded-3xl hover:border-slate-300 transition-all grayscale opacity-60 cursor-not-allowed">
+                                                <button
+                                                    onClick={() => {
+                                                        setUserTicket(nextTicketNumber);
+                                                        setNextTicketNumber(prev => prev + 1);
+                                                        setShowManualSuccess(true);
+                                                        setSelectedFee(null);
+                                                    }}
+                                                    className="flex items-center justify-between p-5 bg-white border-2 border-slate-100 rounded-3xl hover:border-slate-900 hover:bg-slate-50 group transition-all"
+                                                >
                                                     <div className="flex items-center gap-4 text-left">
-                                                        <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center">
-                                                            <CreditCard className="w-6 h-6" />
+                                                        <div className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110">
+                                                            <MapPin className="w-6 h-6" />
                                                         </div>
                                                         <div>
-                                                            <p className="text-sm font-black text-slate-400 italic">Credit / Debit Card</p>
-                                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Coming Soon</p>
+                                                            <p className="text-sm font-black text-slate-900">Manual Payment</p>
+                                                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Pay at Cashier Window</p>
                                                         </div>
                                                     </div>
+                                                    <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-slate-900" />
                                                 </button>
                                             </div>
                                         </div>
@@ -265,6 +280,78 @@ export default function PayFeesPage() {
                                     </div>
                                 </>
                             )}
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Manual Success Ticket Modal */}
+            <AnimatePresence>
+                {showManualSuccess && (
+                    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setShowManualSuccess(false)}
+                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+                        />
+
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 40 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 40 }}
+                            className="relative w-full max-w-sm bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-100 flex flex-col"
+                        >
+                            <div className="p-8 bg-slate-900 text-white text-center relative overflow-hidden">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
+                                    <Users className="w-8 h-8" />
+                                </div>
+                                <h3 className="text-xl font-black uppercase tracking-[0.2em]">Queue Ticket</h3>
+                                <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest mt-1">Cash Division • Manual Payment</p>
+                            </div>
+
+                            <div className="p-8 space-y-8 bg-white text-center">
+                                <div>
+                                    <p className="text-[11px] text-slate-400 font-black uppercase tracking-widest mb-2">Your Priority Number</p>
+                                    <div className="text-7xl font-black text-slate-900 tracking-tighter">
+                                        {userTicket}
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 italic">
+                                    <Clock className="w-5 h-5 text-slate-400" />
+                                    <div className="text-left">
+                                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Est. Serving Time</p>
+                                        <p className="text-sm font-bold text-slate-900">Approximately 25 mins</p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4 pt-4 border-t border-dashed border-slate-200">
+                                    <div className="flex justify-between text-xs font-bold text-slate-900">
+                                        <span className="text-slate-400">Transaction ID</span>
+                                        <span>#ARW-QN-{userTicket}</span>
+                                    </div>
+                                    <div className="flex justify-between text-xs font-bold text-slate-900">
+                                        <span className="text-slate-400">Counter Window</span>
+                                        <span>Window 2-4</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="p-8 pt-0 bg-white">
+                                <button
+                                    onClick={() => setShowManualSuccess(false)}
+                                    className="w-full py-4 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95 text-xs uppercase tracking-widest"
+                                >
+                                    Done, Proceed to Cashier
+                                </button>
+                                <div className="mt-4 flex justify-between px-2 relative">
+                                    <div className="absolute -left-10 top-0 w-6 h-6 bg-slate-50 rounded-full border border-slate-100"></div>
+                                    <div className="absolute -right-10 top-0 w-6 h-6 bg-slate-50 rounded-full border border-slate-100"></div>
+                                </div>
+                            </div>
                         </motion.div>
                     </div>
                 )}
