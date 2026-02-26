@@ -45,7 +45,7 @@ export default function DashboardPage() {
     setIsRefreshing(true);
     // Simulate a network request
     setTimeout(() => {
-      setPriorityNumber(prev => Math.max(1, prev - Math.floor(Math.random() * 3)));
+      setPriorityNumber(prev => prev + Math.floor(Math.random() * 3) + 1);
       setIsRefreshing(false);
     }, 1500);
   };
