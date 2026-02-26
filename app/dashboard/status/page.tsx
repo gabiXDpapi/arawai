@@ -31,6 +31,7 @@ export default function DashboardPage() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -342,11 +343,12 @@ export default function DashboardPage() {
                   totalAmount={parseFloat(selectedItem.details.amount.replace('₱', '').replace(',', ''))}
                   onBack={() => setShowPayment(false)}
                   onSubmit={() => {
-                    // Update status locally for feedback
-                    selectedItem.status = 'Processing';
-                    // Re-sync with sidebar or external state if needed
                     setShowPayment(false);
-                    setSelectedItem(null);
+                    setShowSuccess(true);
+                    // Update status locally for feedback
+                    if (selectedItem) {
+                      selectedItem.status = 'Processing';
+                    }
                   }}
                 />
               ) : (
@@ -532,6 +534,47 @@ export default function DashboardPage() {
                   </div>
                 </>
               )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Success Modal */}
+      <AnimatePresence>
+        {showSuccess && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowSuccess(false)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              className="relative w-full max-w-sm bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-100 p-8 text-center"
+            >
+              <div className="w-20 h-20 bg-green-100 rounded-3xl flex items-center justify-center text-green-600 mx-auto mb-6 shadow-lg shadow-green-100/50">
+                <CheckCircle2 className="w-10 h-10" />
+              </div>
+
+              <h3 className="text-2xl font-black text-slate-900 mb-2">Payment Successful!</h3>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed mb-8">
+                Your payment has been received and is now being processed. We'll notify you once it's finalized.
+              </p>
+
+              <button
+                onClick={() => {
+                  setShowSuccess(false);
+                  setSelectedItem(null);
+                }}
+                className="w-full py-4 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95 text-xs uppercase tracking-widest"
+              >
+                Got it, thanks!
+              </button>
             </motion.div>
           </div>
         )}
