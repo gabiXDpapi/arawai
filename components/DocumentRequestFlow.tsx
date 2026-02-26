@@ -117,6 +117,7 @@ export function DocumentRequestFlow() {
                             priorityNumber={priorityNumber}
                             paymentMethod={paymentMethod}
                             totalAmount={totalAmount}
+                            selectedDocs={selectedDocs}
                             onReset={resetFlow}
                         />
                     )}
