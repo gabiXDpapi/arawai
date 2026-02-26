@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Send, Bot, User, Sparkles, FileText, HelpCircle, UserPlus, CheckCircle2, ShieldCheck, ListChecks } from 'lucide-react';
+import { Send, Bot, User, Sparkles, FileText, HelpCircle, UserPlus, CheckCircle2, ShieldCheck, ListChecks, ArrowRight } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
 import ReactMarkdown from 'react-markdown';
 
@@ -35,11 +35,43 @@ When a user asks for a checklist or to-do list for enrollment, you MUST generate
 - Task 2
 - Task 3
 [/TODO_LIST]
-This will be rendered as an interactive card in the chat. You can include regular text before or after this block.
+
+SPECIAL FEATURE: Document Request
+When a user asks about how to request documents, apply for documents, or where to get certifications, you MUST include this tag:
+[DOCUMENT_REQUEST]
+This will display a direct link for them to start their document request process.
 
 Be helpful, concise, welcoming, and professional. Use formatting like bullet points when listing requirements.
 Always mention that you are the VSU Admissions Assistant if asked who you are.
 If asked about things outside of enrollment, registration, or administrative workflows at VSU, politely redirect the conversation back to your primary purpose.`;
+
+function DocumentRequestCard() {
+  return (
+    <div className="my-6 bg-white rounded-[32px] border border-emerald-100 shadow-xl shadow-emerald-500/5 overflow-hidden group hover:scale-[1.02] transition-all duration-300">
+      <div className="relative h-24 bg-gradient-to-br from-emerald-500 to-teal-600 p-6 flex items-end overflow-hidden">
+        <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform duration-500">
+          <FileText className="w-32 h-32 -mr-8 -mt-8 text-white rotate-12" />
+        </div>
+        <div className="relative z-10">
+          <h3 className="text-white font-bold text-lg leading-tight">Request Documents</h3>
+          <p className="text-emerald-50/80 text-[10px] font-medium uppercase tracking-[0.1em]">VSU Registrar Portal</p>
+        </div>
+      </div>
+      <div className="p-6">
+        <p className="text-slate-600 text-xs leading-relaxed mb-6">
+          Ready to apply for your documents? You can now submit your requests online through our automated portal.
+        </p>
+        <a
+          href="/dashboard/request"
+          className="flex items-center justify-between w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs py-4 px-6 rounded-2xl transition-all group/btn"
+        >
+          <span>Start Application</span>
+          <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+        </a>
+      </div>
+    </div>
+  );
+}
 
 function TodoCard({ tasks }: { tasks: string[] }) {
   const [items, setItems] = useState<{ id: string; text: string; completed: boolean }[]>(
@@ -63,9 +95,8 @@ function TodoCard({ tasks }: { tasks: string[] }) {
             onClick={() => toggle(item.id)}
             className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors group"
           >
-            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-              item.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-200 group-hover:border-emerald-300'
-            }`}>
+            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${item.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-200 group-hover:border-emerald-300'
+              }`}>
               {item.completed && <CheckCircle2 className="w-3 h-3" />}
             </div>
             <span className={`text-xs font-medium ${item.completed ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
@@ -96,19 +127,36 @@ export function Chatbot() {
   const [chatSession, setChatSession] = useState<any>(null);
 
   const renderContent = (content: string) => {
+    // Check for Todo List first
     const todoRegex = /\[TODO_LIST\]([\s\S]*?)\[\/TODO_LIST\]/;
-    const match = content.match(todoRegex);
+    const todoMatch = content.match(todoRegex);
 
-    if (match) {
-      const before = content.split(todoRegex)[0];
-      const after = content.split(todoRegex)[2];
-      const tasks = match[1].trim().split('\n').filter(t => t.trim().length > 0);
+    if (todoMatch) {
+      const index = content.indexOf(todoMatch[0]);
+      const before = content.substring(0, index);
+      const after = content.substring(index + todoMatch[0].length);
+      const tasks = todoMatch[1].trim().split('\n').filter(t => t.trim().length > 0);
 
       return (
         <>
-          {before && <ReactMarkdown>{before}</ReactMarkdown>}
+          {before && renderContent(before)}
           <TodoCard tasks={tasks} />
-          {after && <ReactMarkdown>{after}</ReactMarkdown>}
+          {after && renderContent(after)}
+        </>
+      );
+    }
+
+    // Check for Document Request Card
+    const docReqTag = '[DOCUMENT_REQUEST]';
+    if (content.includes(docReqTag)) {
+      const index = content.indexOf(docReqTag);
+      const before = content.substring(0, index);
+      const after = content.substring(index + docReqTag.length);
+      return (
+        <>
+          {before && renderContent(before)}
+          <DocumentRequestCard />
+          {after && renderContent(after)}
         </>
       );
     }
@@ -162,9 +210,9 @@ export function Chatbot() {
       if (!apiKey) {
         throw new Error('API key is missing. Please ensure NEXT_PUBLIC_GEMINI_API_KEY is set.');
       }
-      
+
       const aiInstance = new GoogleGenAI({ apiKey });
-      
+
       // If we don't have a session yet, or we want to ensure it's fresh
       let currentSession = chatSession;
       if (!currentSession) {
@@ -185,9 +233,9 @@ export function Chatbot() {
       ]);
     } catch (error: any) {
       console.error('Error sending message:', error);
-      
+
       let errorMessage = 'I apologize, but I encountered an error processing your request. Please try again later.';
-      
+
       if (error.message?.includes('403') || error.status === 403) {
         errorMessage = 'I am having trouble accessing the AI service (Permission Denied). This usually means the API key is restricted or invalid for this model. Please check your configuration.';
       }
@@ -241,20 +289,18 @@ export function Chatbot() {
               className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
             >
               <div
-                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                  msg.role === 'user'
-                    ? 'bg-slate-200 text-slate-600'
-                    : 'bg-emerald-100 text-emerald-600'
-                }`}
+                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${msg.role === 'user'
+                  ? 'bg-slate-200 text-slate-600'
+                  : 'bg-emerald-100 text-emerald-600'
+                  }`}
               >
                 {msg.role === 'user' ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
               </div>
               <div
-                className={`max-w-[85%] rounded-[24px] px-6 py-4 ${
-                  msg.role === 'user'
-                    ? 'bg-emerald-500 text-white rounded-tr-none shadow-lg shadow-emerald-200/20'
-                    : 'bg-white text-slate-700 rounded-tl-none shadow-sm border border-slate-100/50'
-                }`}
+                className={`max-w-[85%] rounded-[24px] px-6 py-4 ${msg.role === 'user'
+                  ? 'bg-emerald-500 text-white rounded-tr-none shadow-lg shadow-emerald-200/20'
+                  : 'bg-white text-slate-700 rounded-tl-none shadow-sm border border-slate-100/50'
+                  }`}
               >
                 {msg.role === 'user' ? (
                   <p className="text-sm leading-relaxed">{msg.content}</p>
