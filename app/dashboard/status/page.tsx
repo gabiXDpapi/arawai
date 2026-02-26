@@ -559,7 +559,7 @@ export default function DashboardPage() {
                       >
                         Dismiss
                       </button>
-                      {selectedItem.status === 'To Pay' ? (
+                      {selectedItem.status === 'To Pay' && selectedItem.id !== 3 ? (
                         <>
                           <button
                             onClick={() => {
@@ -579,7 +579,7 @@ export default function DashboardPage() {
                             <CreditCard className="w-4 h-4" /> Online
                           </button>
                         </>
-                      ) : (
+                      ) : selectedItem.id !== 3 && (
                         <button className={`flex-[1.5] py-4 ${selectedItem.color} text-white font-black rounded-2xl shadow-xl hover:brightness-110 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2`}>
                           <ExternalLink className="w-4 h-4" /> View Full Details
                         </button>
