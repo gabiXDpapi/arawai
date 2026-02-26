@@ -22,7 +22,7 @@ export function IdentityVerification({ idFile, onFileChange, onNext, onPrev }: I
     >
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-slate-900 mb-2">Identity Verification</h2>
-        <p className="text-slate-500">Please upload a clear photo of your valid Student ID or any Government ID.</p>
+        <p className="text-slate-500">Please upload a clear photo of your valid Student ID for verification.</p>
       </div>
 
       <div

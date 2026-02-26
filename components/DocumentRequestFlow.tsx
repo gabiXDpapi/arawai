@@ -44,6 +44,14 @@ export function DocumentRequestFlow() {
     };
 
     const nextStep = () => {
+        if (currentStep === 2 && totalAmount === 0) {
+            // Generate priority number and skip payment step
+            const randomNum = Math.floor(Math.random() * 900) + 100;
+            setPriorityNumber(randomNum.toString());
+            setCurrentStep(4);
+            return;
+        }
+
         if (currentStep === 3) {
             if (paymentMethod === 'online' && !showGCash) {
                 setShowGCash(true);
@@ -117,6 +125,7 @@ export function DocumentRequestFlow() {
                             priorityNumber={priorityNumber}
                             paymentMethod={paymentMethod}
                             totalAmount={totalAmount}
+                            selectedDocs={selectedDocs}
                             onReset={resetFlow}
                         />
                     )}
