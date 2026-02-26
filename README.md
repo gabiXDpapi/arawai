@@ -1,4 +1,4 @@
-# ARAW.ai (Automate Registrar and Administrative Workflows)
+# ARAW.ai (Automated Registrar and Administrative Workflows)
 
 **ARAW.ai** is an intelligent Student Virtual Assistant and Management Portal designed for Visayas State University (VSU). It streamlines the admissions process, document requests, and student fee management, providing a centralized hub for all registrar and administrative workflows.
 
@@ -66,4 +66,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ---
 
-Developed as part of the Software Engineering curriculum at Visayas State University.
+Developed as part of the 2nd Hackathon event for CS Week.
