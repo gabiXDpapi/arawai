@@ -46,10 +46,42 @@ Use this EXACT format to trigger the choice buttons:
 Would you like to settle your administrative fines online via GCash or in-person at the Cash Division?
 [/FINES_CHOICE]
 
-3. GENERAL SUPPORT: Answer questions about document status, registrar locations, and general student workflows at VSU.
+3. DOCUMENT REQUEST: When a student asks about how to request documents (TOR, COG, COR, etc.), or where to apply for academic records, you MUST include this tag:
+[DOCUMENT_REQUEST]
+This will display a direct link for them to start their document request process.
+
+4. GENERAL SUPPORT: Answer questions about document status, registrar locations, and general student workflows at VSU.
 
 Be proactive, helpful, and professional. Use formatting like bold text for emphasis.
 If a user asks about things outside of VSU administrative workflows, politely redirect them.`;
+
+function DocumentRequestCard() {
+  return (
+    <div className="my-6 bg-white rounded-[32px] border border-emerald-100 shadow-xl shadow-emerald-500/5 overflow-hidden group hover:scale-[1.02] transition-all duration-300">
+      <div className="relative h-24 bg-gradient-to-br from-emerald-500 to-teal-600 p-6 flex items-end overflow-hidden">
+        <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform duration-500">
+          <FileText className="w-32 h-32 -mr-8 -mt-8 text-white rotate-12" />
+        </div>
+        <div className="relative z-10">
+          <h3 className="text-white font-bold text-lg leading-tight">Request Documents</h3>
+          <p className="text-emerald-50/80 text-[10px] font-medium uppercase tracking-[0.1em]">VSU Registrar Portal</p>
+        </div>
+      </div>
+      <div className="p-6">
+        <p className="text-slate-600 text-xs leading-relaxed mb-6">
+          Ready to apply for your academic records? You can now submit your requests online through our automated portal.
+        </p>
+        <Link
+          href="/dashboard/request"
+          className="flex items-center justify-between w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs py-4 px-6 rounded-2xl transition-all group/btn"
+        >
+          <span>Start Application</span>
+          <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+        </Link>
+      </div>
+    </div>
+  );
+}
 
 function PaymentItinerary({ steps }: { steps: string[] }) {
   return (
@@ -267,25 +299,26 @@ export function StudentChatbot() {
 
   const handleGCashSubmit = () => {
     setMessages(prev => [...prev,
-    { id: Date.now().toString(), role: 'assistant', content: 'Payment successful! Your administrative fines have been cleared. You can check your updated status in the Document Status page.' }
+    { id: Date.now().toString(), role: 'assistant', content: 'Payment successful! Your administrative fines have been cleared. Now that your account is cleared, you can proceed to request your documents.\n\n[DOCUMENT_REQUEST]' }
     ]);
   };
 
-  const renderContent = (msg: Message) => {
+  const renderContent = (msg: Message): React.ReactNode => {
     const content = msg.content;
 
     // Check for Payment Itinerary
     const itineraryRegex = /\[PAYMENT_ITINERARY\]([\s\S]*?)\[\/PAYMENT_ITINERARY\]/;
     const itineraryMatch = content.match(itineraryRegex);
     if (itineraryMatch) {
-      const before = content.split(itineraryRegex)[0];
-      const after = content.split(itineraryRegex)[2];
+      const index = content.indexOf(itineraryMatch[0]);
+      const before = content.substring(0, index);
+      const after = content.substring(index + itineraryMatch[0].length);
       const steps = itineraryMatch[1].trim().split('\n').filter(t => t.trim().length > 0);
       return (
         <>
-          {before && <ReactMarkdown>{before}</ReactMarkdown>}
+          {before && renderContent({ ...msg, content: before })}
           <PaymentItinerary steps={steps} />
-          {after && <ReactMarkdown>{after}</ReactMarkdown>}
+          {after && renderContent({ ...msg, content: after })}
         </>
       );
     }
@@ -294,11 +327,29 @@ export function StudentChatbot() {
     const finesRegex = /\[FINES_CHOICE\]([\s\S]*?)\[\/FINES_CHOICE\]/;
     const finesMatch = content.match(finesRegex);
     if (finesMatch) {
-      const before = content.split(finesRegex)[0];
+      const index = content.indexOf(finesMatch[0]);
+      const before = content.substring(0, index);
+      const after = content.substring(index + finesMatch[0].length);
       return (
         <>
-          {before && <ReactMarkdown>{before}</ReactMarkdown>}
+          {before && renderContent({ ...msg, content: before })}
           <FinesChoice onChoice={handleFinesChoice} />
+          {after && renderContent({ ...msg, content: after })}
+        </>
+      );
+    }
+
+    // Check for Document Request Card
+    const docReqTag = '[DOCUMENT_REQUEST]';
+    if (content.includes(docReqTag)) {
+      const index = content.indexOf(docReqTag);
+      const before = content.substring(0, index);
+      const after = content.substring(index + docReqTag.length);
+      return (
+        <>
+          {before && renderContent({ ...msg, content: before })}
+          <DocumentRequestCard />
+          {after && renderContent({ ...msg, content: after })}
         </>
       );
     }
