@@ -61,7 +61,7 @@ export function DocumentSelection({ selectedDocs, toggleDocument, totalAmount, o
                 </div>
               </div>
               <div className="font-bold text-slate-700">
-                ₱{doc.price.toFixed(2)}
+                {doc.price > 0 ? `₱${doc.price.toFixed(2)}` : <span className="text-emerald-500 text-xs font-black uppercase tracking-widest">Free</span>}
               </div>
             </div>
           );

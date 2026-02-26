@@ -113,7 +113,9 @@ export function RequestComplete({ priorityNumber, paymentMethod, totalAmount, se
                   </div>
                   <div className="text-right">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Amount Due</p>
-                    <div className="text-2xl font-black text-slate-900 tracking-tighter">₱{totalAmount.toFixed(2)}</div>
+                    <div className="text-2xl font-black text-slate-900 tracking-tighter">
+                      {totalAmount > 0 ? `₱${totalAmount.toFixed(2)}` : <span className="text-emerald-500 uppercase">Free</span>}
+                    </div>
                   </div>
                 </div>
 
@@ -128,7 +130,9 @@ export function RequestComplete({ priorityNumber, paymentMethod, totalAmount, se
                       return (
                         <div key={docId} className="flex justify-between items-center text-xs">
                           <span className="font-bold text-slate-700">{doc?.label}</span>
-                          <span className="font-black text-slate-900">₱{doc?.price.toFixed(2)}</span>
+                          <span className="font-black text-slate-900">
+                            {doc?.price && doc.price > 0 ? `₱${doc.price.toFixed(2)}` : <span className="text-emerald-500 font-black">FREE</span>}
+                          </span>
                         </div>
                       );
                     })}
@@ -141,7 +145,12 @@ export function RequestComplete({ priorityNumber, paymentMethod, totalAmount, se
                   </h4>
 
                   <div className="space-y-4">
-                    {paymentMethod === 'manual' ? (
+                    {totalAmount === 0 ? (
+                      <div className="flex gap-4">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-black">✓</span>
+                        <p className="text-sm font-medium text-slate-600">This request is free. We will process your documents and notify you via email once they are ready for pickup or download.</p>
+                      </div>
+                    ) : paymentMethod === 'manual' ? (
                       <>
                         <div className="flex gap-4">
                           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-black">1</span>
