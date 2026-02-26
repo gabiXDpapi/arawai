@@ -738,7 +738,10 @@ export default function DashboardPage() {
                 <>
                   <div className="p-8 bg-slate-50 relative border-b border-slate-100">
                     <button
-                      onClick={() => setSelectedFee(null)}
+                      onClick={() => {
+                        setSelectedFee(null);
+                        setSelectedItem(documentStatuses.find(i => i.id === 3));
+                      }}
                       className="absolute top-6 right-6 p-2 bg-white rounded-xl text-slate-400 hover:text-slate-900 shadow-sm transition-all"
                     >
                       <ArrowLeft className="w-5 h-5" />
