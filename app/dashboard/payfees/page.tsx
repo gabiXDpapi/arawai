@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Logo } from '@/components/Logo';
 import {
@@ -12,15 +12,25 @@ import {
     FileText,
     Clock,
     ChevronRight,
-    CheckCircle2
+    CheckCircle2,
+    Bell,
+    LogOut,
+    MessageSquare,
+    ExternalLink
 } from 'lucide-react';
 import Link from 'next/link';
 import { GCashPayment } from '@/components/GCashPayment';
 
 export default function PayFeesPage() {
     const [selectedFee, setSelectedFee] = useState<any>(null);
+    const [currentTime, setCurrentTime] = useState(new Date());
     const [showPayment, setShowPayment] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+
+    useEffect(() => {
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     const pendingFees = [
         {
@@ -34,18 +44,6 @@ export default function PayFeesPage() {
                 { name: "Library Fees", value: 250.00 },
                 { name: "Late Enrollment Fee", value: 250.00 }
             ]
-        },
-        {
-            id: "sem-bal-2026",
-            title: "Semester Balance",
-            type: "Tuition",
-            amount: 4500.00,
-            dueDate: "April 05, 2026",
-            description: "Remaining balance for the 2nd Semester 2025-2026.",
-            breakdown: [
-                { name: "Tuition Fee Balance", value: 3800.00 },
-                { name: "Student Activities", value: 700.00 }
-            ]
         }
     ];
 
@@ -56,21 +54,50 @@ export default function PayFeesPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Link
-                            href="/dashboard/status"
-                            className="flex items-center gap-2 text-slate-400 hover:text-accent font-bold transition-all"
+                            href="/dashboard"
+                            className="sm:hidden flex items-center justify-center w-10 h-10 bg-slate-100 text-slate-500 rounded-xl"
                         >
-                            <ArrowLeft className="w-5 h-5" />
-                            <span className="hidden sm:inline text-xs uppercase tracking-widest">Back to Status</span>
+                            <MessageSquare className="w-5 h-5" />
                         </Link>
-                        <div className="h-6 w-[1px] bg-slate-200 mx-2 hidden sm:block"></div>
-                        <h1 className="text-xl font-black text-slate-900 tracking-tight">Payment Portal</h1>
+
+                        <Link href="/" className="flex items-center gap-3 group">
+                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-accent/20 group-hover:scale-105 transition-transform border border-slate-100">
+                                <Logo width={28} height={28} />
+                            </div>
+                            <div>
+                                <h1 className="text-xl font-bold text-slate-900 leading-none">ARAW<span className="text-accent">.ai</span></h1>
+                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Student Portal</p>
+                            </div>
+                        </Link>
                     </div>
 
-                    <Link href="/" className="flex items-center gap-3 group">
-                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-accent/20 border border-slate-100">
-                            <Logo width={28} height={28} />
+                    <div className="flex items-center gap-4">
+                        <Link
+                            href="/dashboard"
+                            className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-accent/10 hover:text-accent-foreground rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-accent/20 shadow-sm"
+                        >
+                            <MessageSquare className="w-4 h-4" />
+                            Assistant
+                        </Link>
+
+                        <div className="h-8 w-[1px] bg-slate-200 mx-2 hidden sm:block"></div>
+
+                        <div className="hidden md:flex flex-col items-end mr-4">
+                            <p className="text-sm font-bold text-slate-900">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{currentTime.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                         </div>
-                    </Link>
+                        <button className="p-2.5 text-slate-400 hover:text-accent-foreground hover:bg-accent/10 rounded-xl transition-all relative">
+                            <Bell className="w-5 h-5" />
+                            <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+                        </button>
+                        <Link
+                            href="/login"
+                            className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-sm font-bold transition-all border border-transparent hover:border-rose-100"
+                        >
+                            <LogOut className="w-4 h-4" />
+                            <span className="hidden sm:inline">Logout</span>
+                        </Link>
+                    </div>
                 </div>
             </header>
 
