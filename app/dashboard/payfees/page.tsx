@@ -60,7 +60,7 @@ export default function PayFeesPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Link
-                            href="/dashboard"
+                            href="/dashboard/status"
                             className="sm:hidden flex items-center justify-center w-10 h-10 bg-slate-100 text-slate-500 rounded-xl"
                         >
                             <MessageSquare className="w-5 h-5" />
@@ -108,9 +108,17 @@ export default function PayFeesPage() {
             </header>
 
             <div className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
-                <div className="mb-10">
-                    <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-2">Settle Your Fees</h2>
-                    <p className="text-slate-500 font-medium">Select a pending balance to proceed with payment.</p>
+                <div className="mb-10 flex flex-col sm:flex-row sm:items-center gap-4">
+                    <Link
+                        href="/dashboard/status"
+                        className="w-12 h-12 bg-white rounded-2xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-accent hover:border-accent/20 hover:shadow-lg hover:shadow-accent/5 transition-all group"
+                    >
+                        <ArrowLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+                    </Link>
+                    <div>
+                        <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-1">Settle Your Fees</h2>
+                        <p className="text-slate-500 font-medium">Select a pending balance to proceed with payment.</p>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6">
