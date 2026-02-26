@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Chatbot } from '@/components/chatbot';
 import { LogIn, ShieldCheck, Loader2 } from 'lucide-react';
+import favicon from './favicon.png';
+import Image from 'next/image';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -24,17 +26,16 @@ export default function LandingPage() {
       </div>
 
       {/* Header */}
-      <header className="relative z-20 flex items-center justify-between px-6 py-6 sm:px-10 lg:px-16 bg-white/40 backdrop-blur-xl border-b border-white/20">
+      <header className="relative z-20 flex items-center justify-between px-6 py-6 sm:px-10 lg:px-16 backdrop-blur-xl border-b border-white/20">
         <div className="flex items-center gap-4">
-          <div className="relative flex items-center justify-center w-12 h-12 bg-white rounded-2xl shadow-sm border border-slate-100">
-            <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500 to-emerald-400 rounded-2xl opacity-10 blur-md"></div>
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-emerald-400 text-white shadow-lg shadow-emerald-200/50">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-amber-400 rounded-full border-4 border-white"></div>
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            ARAW<span className="text-emerald-500">.ai</span>
+        <Image
+          src={favicon}
+          alt="na"
+          width={40}
+          height={40}
+        />          
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        ARAW<span className="text-emerald-500">.ai</span>
           </h1>
         </div>
 
