@@ -20,7 +20,9 @@ import {
   MapPin,
   CheckCircle2,
   ExternalLink,
-  RefreshCw
+  RefreshCw,
+  ArrowLeft,
+  Smartphone
 } from 'lucide-react';
 import Link from 'next/link';
 import { GCashPayment } from '@/components/GCashPayment';
@@ -35,6 +37,7 @@ export default function DashboardPage() {
   const [showManualSuccess, setShowManualSuccess] = useState(false);
   const [userTicket, setUserTicket] = useState<number | null>(null);
   const [nextTicketNumber, setNextTicketNumber] = useState(155);
+  const [selectedFee, setSelectedFee] = useState<any>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -483,14 +486,31 @@ export default function DashboardPage() {
                         </div>
                         <div className="space-y-3">
                           <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-1 italic">Payment Details</h4>
-                          <div className="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-50">
+                          <div className="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-50 overflow-hidden">
                             {selectedItem.details.breakdown.map((fee: any, i: number) => (
-                              <div key={i} className="flex justify-between p-4 px-6">
-                                <span className="text-sm font-medium text-slate-500">{fee.name}</span>
-                                <span className="text-sm font-bold text-slate-900">{fee.value}</span>
-                              </div>
+                              <button
+                                key={i}
+                                onClick={() => {
+                                  setSelectedFee({
+                                    title: fee.name,
+                                    amount: parseFloat(fee.value.replace('₱', '').replace(',', '')),
+                                    breakdown: [{ name: fee.name, value: parseFloat(fee.value.replace('₱', '').replace(',', '')) }]
+                                  });
+                                  setSelectedItem(null);
+                                }}
+                                className="flex items-center justify-between w-full p-4 px-6 hover:bg-slate-50 transition-all group"
+                              >
+                                <span className="text-sm font-bold text-slate-700 group-hover:text-accent group-hover:translate-x-1 transition-all flex items-center gap-2">
+                                  {fee.name}
+                                </span>
+                                <div className="flex items-center gap-3">
+                                  <span className="text-sm font-black text-slate-900 tracking-tight">{fee.value}</span>
+                                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-accent group-hover:translate-x-1 transition-all" />
+                                </div>
+                              </button>
                             ))}
                           </div>
+                          <p className="text-[10px] text-slate-400 italic px-2 mt-2">Tap an item to settle it separately.</p>
                         </div>
                       </div>
                     )}
@@ -539,7 +559,7 @@ export default function DashboardPage() {
                       >
                         Dismiss
                       </button>
-                      {selectedItem.status === 'To Pay' ? (
+                      {selectedItem.status === 'To Pay' && selectedItem.id !== 3 ? (
                         <>
                           <button
                             onClick={() => {
@@ -559,7 +579,7 @@ export default function DashboardPage() {
                             <CreditCard className="w-4 h-4" /> Online
                           </button>
                         </>
-                      ) : (
+                      ) : selectedItem.id !== 3 && (
                         <button className={`flex-[1.5] py-4 ${selectedItem.color} text-white font-black rounded-2xl shadow-xl hover:brightness-110 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2`}>
                           <ExternalLink className="w-4 h-4" /> View Full Details
                         </button>
@@ -682,6 +702,108 @@ export default function DashboardPage() {
                   <div className="absolute -right-10 top-0 w-6 h-6 bg-slate-50 rounded-full border border-slate-100"></div>
                 </div>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Individual Fee Payment Modal */}
+      <AnimatePresence>
+        {selectedFee && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 pb-20 sm:pb-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedFee(null)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              className="relative w-full max-w-lg bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-100 flex flex-col"
+            >
+              {showPayment ? (
+                <GCashPayment
+                  totalAmount={selectedFee.amount}
+                  onBack={() => setShowPayment(false)}
+                  onSubmit={() => {
+                    setShowPayment(false);
+                    setShowSuccess(true);
+                  }}
+                />
+              ) : (
+                <>
+                  <div className="p-8 bg-slate-50 relative border-b border-slate-100">
+                    <button
+                      onClick={() => {
+                        setSelectedFee(null);
+                        setSelectedItem(documentStatuses.find(i => i.id === 3));
+                      }}
+                      className="absolute top-6 right-6 p-2 bg-white rounded-xl text-slate-400 hover:text-slate-900 shadow-sm transition-all"
+                    >
+                      <ArrowLeft className="w-5 h-5" />
+                    </button>
+
+                    <h3 className="text-2xl font-black text-slate-900 leading-tight mb-2">Review Payment</h3>
+                    <p className="text-sm text-slate-500 font-medium italic mb-6">Checking out for {selectedFee.title}</p>
+
+                    <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group transition-all hover:border-accent/30">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 rounded-full -mr-10 -mt-10 group-hover:scale-110 transition-transform"></div>
+                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 italic">Payable Amount</p>
+                      <p className="text-4xl font-black text-slate-900 tracking-tighter">₱{selectedFee.amount.toLocaleString('en-PH', { minimumFractionDigits: 2 })}</p>
+                    </div>
+                  </div>
+
+                  <div className="p-8 space-y-6">
+                    <div className="space-y-3">
+                      <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2">
+                        <CreditCard className="w-3 h-3" /> Select Payment Method
+                      </h4>
+                      <div className="grid grid-cols-1 gap-3">
+                        <button
+                          onClick={() => setShowPayment(true)}
+                          className="flex items-center justify-between p-5 bg-white border-2 border-slate-100 rounded-3xl hover:border-accent hover:bg-accent/5 group transition-all"
+                        >
+                          <div className="flex items-center gap-4 text-left">
+                            <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110">
+                              <Smartphone className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-black text-slate-900">Online Payment</p>
+                              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">GCash / Mobile Wallet</p>
+                            </div>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-accent" />
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setUserTicket(nextTicketNumber);
+                            setNextTicketNumber(prev => prev + 1);
+                            setShowManualSuccess(true);
+                            setSelectedFee(null);
+                          }}
+                          className="flex items-center justify-between p-5 bg-white border-2 border-slate-100 rounded-3xl hover:border-slate-900 hover:bg-slate-50 group transition-all"
+                        >
+                          <div className="flex items-center gap-4 text-left">
+                            <div className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110">
+                              <MapPin className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-black text-slate-900">Manual Payment</p>
+                              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Pay at Cashier Window</p>
+                            </div>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-slate-900" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </motion.div>
           </div>
         )}

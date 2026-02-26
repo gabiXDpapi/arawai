@@ -41,15 +41,25 @@ export default function PayFeesPage() {
 
     const pendingFees = [
         {
-            id: "admin-2026",
-            title: "Admin Fees",
+            id: "lib-2026",
+            title: "Library Fees",
             type: "Miscellaneous",
-            amount: 500.00,
+            amount: 250.00,
             dueDate: "March 15, 2026",
-            description: "Includes library fees and late enrollment charges.",
+            description: "Late book return or library resource usage fees.",
             breakdown: [
-                { name: "Library Fees", value: 250.00 },
-                { name: "Late Enrollment Fee", value: 250.00 }
+                { name: "Library Fine", value: 250.00 }
+            ]
+        },
+        {
+            id: "enrol-late-2026",
+            title: "Late Enrollment Fee",
+            type: "Miscellaneous",
+            amount: 250.00,
+            dueDate: "March 15, 2026",
+            description: "Surcharge for processing enrollment after the deadline.",
+            breakdown: [
+                { name: "Late Enrollment Charge", value: 250.00 }
             ]
         }
     ];
@@ -137,7 +147,8 @@ export default function PayFeesPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1 }}
-                            className="bg-white rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all overflow-hidden group"
+                            onClick={() => setSelectedFee(fee)}
+                            className="bg-white rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all overflow-hidden group cursor-pointer active:scale-[0.98]"
                         >
                             <div className="p-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
                                 <div className="flex items-start gap-5">
@@ -155,17 +166,14 @@ export default function PayFeesPage() {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col items-end gap-3 min-w-[200px]">
+                                <div className="flex items-center gap-6">
                                     <div className="text-right">
                                         <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 italic">Balance Due</p>
                                         <p className="text-3xl font-black text-slate-900 tracking-tighter">₱{fee.amount.toLocaleString('en-PH', { minimumFractionDigits: 2 })}</p>
                                     </div>
-                                    <button
-                                        onClick={() => setSelectedFee(fee)}
-                                        className="w-full py-3.5 bg-accent text-accent-foreground font-black rounded-2xl shadow-lg shadow-accent/20 hover:bg-accent-hover transition-all active:scale-95 flex items-center justify-center gap-2 text-xs uppercase tracking-widest"
-                                    >
-                                        Select & Pay <ChevronRight className="w-4 h-4" />
-                                    </button>
+                                    <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-accent/10 group-hover:text-accent transition-all">
+                                        <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                                    </div>
                                 </div>
                             </div>
 
