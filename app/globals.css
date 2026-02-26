@@ -1,15 +1,9 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-@layer utilities {
-  .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none; /* Chrome, Safari and Opera */
-  }
-}
-
-body {
-  @apply selection:bg-emerald-100 selection:text-emerald-900;
+@theme {
+    --color-accent: #fece00;
+    --color-accent-hover: #e5b900;
+    --color-accent-soft: rgba(254, 206, 0, 0.1);
+    --color-accent-foreground: #4a3e00;
 }

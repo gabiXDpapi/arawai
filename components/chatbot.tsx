@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Send, Bot, User, Sparkles, FileText, HelpCircle, UserPlus, CheckCircle2, ShieldCheck, ListChecks } from 'lucide-react';
+import { Send, Bot, User, Sparkles, FileText, HelpCircle, UserPlus, CheckCircle2, ShieldCheck, ListChecks, ArrowRight } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
 import ReactMarkdown from 'react-markdown';
 
 // Initialize Gemini API
-const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+// const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
 
 type Message = {
   id: string;
@@ -35,11 +35,43 @@ When a user asks for a checklist or to-do list for enrollment, you MUST generate
 - Task 2
 - Task 3
 [/TODO_LIST]
-This will be rendered as an interactive card in the chat. You can include regular text before or after this block.
+
+SPECIAL FEATURE: Document Request
+When a user asks about how to request documents, apply for documents, or where to get certifications, you MUST include this tag:
+[DOCUMENT_REQUEST]
+This will display a direct link for them to start their document request process.
 
 Be helpful, concise, welcoming, and professional. Use formatting like bullet points when listing requirements.
 Always mention that you are the VSU Admissions Assistant if asked who you are.
 If asked about things outside of enrollment, registration, or administrative workflows at VSU, politely redirect the conversation back to your primary purpose.`;
+
+function DocumentRequestCard() {
+  return (
+    <div className="my-6 bg-white rounded-[32px] border border-emerald-100 shadow-xl shadow-emerald-500/5 overflow-hidden group hover:scale-[1.02] transition-all duration-300">
+      <div className="relative h-24 bg-gradient-to-br from-emerald-500 to-teal-600 p-6 flex items-end overflow-hidden">
+        <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform duration-500">
+          <FileText className="w-32 h-32 -mr-8 -mt-8 text-white rotate-12" />
+        </div>
+        <div className="relative z-10">
+          <h3 className="text-white font-bold text-lg leading-tight">Request Documents</h3>
+          <p className="text-emerald-50/80 text-[10px] font-medium uppercase tracking-[0.1em]">VSU Registrar Portal</p>
+        </div>
+      </div>
+      <div className="p-6">
+        <p className="text-slate-600 text-xs leading-relaxed mb-6">
+          Official document requests are reserved for students and alumni. Please sign in to your student portal to proceed.
+        </p>
+        <a
+          href="/login"
+          className="flex items-center justify-between w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs py-4 px-6 rounded-2xl transition-all group/btn"
+        >
+          <span>Student Sign In</span>
+          <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+        </a>
+      </div>
+    </div>
+  );
+}
 
 function TodoCard({ tasks }: { tasks: string[] }) {
   const [items, setItems] = useState<{ id: string; text: string; completed: boolean }[]>(
@@ -51,10 +83,10 @@ function TodoCard({ tasks }: { tasks: string[] }) {
   };
 
   return (
-    <div className="my-4 bg-white rounded-2xl border border-emerald-100 shadow-sm overflow-hidden">
-      <div className="bg-emerald-50 px-5 py-3 border-b border-emerald-100 flex items-center gap-2">
-        <ListChecks className="w-4 h-4 text-emerald-600" />
-        <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider">Enrollment Checklist</span>
+    <div className="my-4 bg-white rounded-2xl border border-accent/20 shadow-sm overflow-hidden">
+      <div className="bg-accent/10 px-5 py-3 border-b border-accent/20 flex items-center gap-2">
+        <ListChecks className="w-4 h-4 text-accent-foreground" />
+        <span className="text-xs font-bold text-accent-foreground uppercase tracking-wider">Enrollment Checklist</span>
       </div>
       <div className="p-4 space-y-2">
         {items.map(item => (
@@ -63,9 +95,8 @@ function TodoCard({ tasks }: { tasks: string[] }) {
             onClick={() => toggle(item.id)}
             className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors group"
           >
-            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-              item.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-200 group-hover:border-emerald-300'
-            }`}>
+            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${item.completed ? 'bg-accent border-accent text-slate-900' : 'border-slate-200 group-hover:border-accent'
+              }`}>
               {item.completed && <CheckCircle2 className="w-3 h-3" />}
             </div>
             <span className={`text-xs font-medium ${item.completed ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
@@ -95,20 +126,37 @@ export function Chatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [chatSession, setChatSession] = useState<any>(null);
 
-  const renderContent = (content: string) => {
+  const renderContent = (content: string): ReactNode => {
+    // Check for Todo List first
     const todoRegex = /\[TODO_LIST\]([\s\S]*?)\[\/TODO_LIST\]/;
-    const match = content.match(todoRegex);
+    const todoMatch = content.match(todoRegex);
 
-    if (match) {
-      const before = content.split(todoRegex)[0];
-      const after = content.split(todoRegex)[2];
-      const tasks = match[1].trim().split('\n').filter(t => t.trim().length > 0);
+    if (todoMatch) {
+      const index = content.indexOf(todoMatch[0]);
+      const before = content.substring(0, index);
+      const after = content.substring(index + todoMatch[0].length);
+      const tasks = todoMatch[1].trim().split('\n').filter(t => t.trim().length > 0);
 
       return (
         <>
-          {before && <ReactMarkdown>{before}</ReactMarkdown>}
+          {before && renderContent(before)}
           <TodoCard tasks={tasks} />
-          {after && <ReactMarkdown>{after}</ReactMarkdown>}
+          {after && renderContent(after)}
+        </>
+      );
+    }
+
+    // Check for Document Request Card
+    const docReqTag = '[DOCUMENT_REQUEST]';
+    if (content.includes(docReqTag)) {
+      const index = content.indexOf(docReqTag);
+      const before = content.substring(0, index);
+      const after = content.substring(index + docReqTag.length);
+      return (
+        <>
+          {before && renderContent(before)}
+          <DocumentRequestCard />
+          {after && renderContent(after)}
         </>
       );
     }
@@ -120,8 +168,12 @@ export function Chatbot() {
     // Initialize chat session
     const initChat = async () => {
       try {
-        const chat = ai.chats.create({
-          model: 'gemini-3-flash-preview',
+        const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+        if (!apiKey) return;
+
+        const aiInstance = new GoogleGenAI({ apiKey });
+        const chat = aiInstance.chats.create({
+          model: 'gemini-flash-latest',
           config: {
             systemInstruction: SYSTEM_INSTRUCTION,
             temperature: 0.7,
@@ -145,7 +197,7 @@ export function Chatbot() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading || !chatSession) return;
+    if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
     setInput('');
@@ -153,19 +205,47 @@ export function Chatbot() {
     setIsLoading(true);
 
     try {
-      const response = await chatSession.sendMessage({ message: userMessage });
+      // Create a fresh instance for each request as per guidelines
+      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error('API key is missing. Please ensure NEXT_PUBLIC_GEMINI_API_KEY is set.');
+      }
+
+      const aiInstance = new GoogleGenAI({ apiKey });
+
+      // If we don't have a session yet, or we want to ensure it's fresh
+      let currentSession = chatSession;
+      if (!currentSession) {
+        currentSession = aiInstance.chats.create({
+          model: 'gemini-flash-latest',
+          config: {
+            systemInstruction: SYSTEM_INSTRUCTION,
+            temperature: 0.7,
+          },
+        });
+        setChatSession(currentSession);
+      }
+
+      const response = await currentSession.sendMessage({ message: userMessage });
       setMessages((prev) => [
         ...prev,
         { id: (Date.now() + 1).toString(), role: 'assistant', content: response.text },
       ]);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending message:', error);
+
+      let errorMessage = 'I apologize, but I encountered an error processing your request. Please try again later.';
+
+      if (error.message?.includes('403') || error.status === 403) {
+        errorMessage = 'I am having trouble accessing the AI service (Permission Denied). This usually means the API key is restricted or invalid for this model. Please check your configuration.';
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: 'I apologize, but I encountered an error processing your request. Please try again later.',
+          content: errorMessage,
         },
       ]);
     } finally {
@@ -183,15 +263,15 @@ export function Chatbot() {
       <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100/50 bg-white/40 backdrop-blur-md z-10">
         <div className="flex items-center gap-4">
           <div className="relative">
-            <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-emerald-400 text-white shadow-lg shadow-emerald-200/50">
+            <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent to-accent-hover text-slate-900 shadow-lg shadow-accent/30">
               <Bot className="w-6 h-6" />
             </div>
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-4 border-white"></div>
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-accent rounded-full border-4 border-white"></div>
           </div>
           <div>
             <h2 className="font-bold text-slate-900 tracking-tight">VSU Admissions Assistant</h2>
-            <p className="text-[11px] text-emerald-600 font-bold uppercase tracking-widest flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <p className="text-[11px] text-accent-foreground font-bold uppercase tracking-widest flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
               Visayas State University
             </p>
           </div>
@@ -209,25 +289,23 @@ export function Chatbot() {
               className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
             >
               <div
-                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                  msg.role === 'user'
-                    ? 'bg-slate-200 text-slate-600'
-                    : 'bg-emerald-100 text-emerald-600'
-                }`}
+                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${msg.role === 'user'
+                  ? 'bg-slate-200 text-slate-600'
+                  : 'bg-accent text-accent-foreground'
+                  }`}
               >
                 {msg.role === 'user' ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
               </div>
               <div
-                className={`max-w-[85%] rounded-[24px] px-6 py-4 ${
-                  msg.role === 'user'
-                    ? 'bg-emerald-500 text-white rounded-tr-none shadow-lg shadow-emerald-200/20'
-                    : 'bg-white text-slate-700 rounded-tl-none shadow-sm border border-slate-100/50'
-                }`}
+                className={`max-w-[85%] rounded-[24px] px-6 py-4 ${msg.role === 'user'
+                  ? 'bg-accent text-slate-900 rounded-tr-none shadow-lg shadow-accent/20'
+                  : 'bg-white text-slate-700 rounded-tl-none shadow-sm border border-slate-100/50'
+                  }`}
               >
                 {msg.role === 'user' ? (
                   <p className="text-sm leading-relaxed">{msg.content}</p>
                 ) : (
-                  <div className="text-sm leading-relaxed prose prose-sm prose-emerald max-w-none">
+                  <div className="text-sm leading-relaxed prose prose-sm prose-slate max-w-none">
                     {renderContent(msg.content)}
                   </div>
                 )}
@@ -240,13 +318,13 @@ export function Chatbot() {
               animate={{ opacity: 1, y: 0 }}
               className="flex gap-4"
             >
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent text-accent-foreground flex items-center justify-center">
                 <Sparkles className="w-4 h-4" />
               </div>
               <div className="bg-white text-slate-700 rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm border border-slate-100 flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </motion.div>
           )}
@@ -261,23 +339,23 @@ export function Chatbot() {
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => handleSuggestionClick("What are the requirements for freshman enrollment at VSU?")}
-              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-200 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
+              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-accent/10 text-slate-600 hover:text-accent-foreground border border-slate-200 hover:border-accent/40 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
             >
-              <UserPlus className="w-4 h-4 text-emerald-500" />
+              <UserPlus className="w-4 h-4 text-accent" />
               VSU Requirements
             </button>
             <button
               onClick={() => handleSuggestionClick("How do I submit my application documents to VSU registrar?")}
-              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-200 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
+              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-accent/10 text-slate-600 hover:text-accent-foreground border border-slate-200 hover:border-accent/40 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
             >
-              <FileText className="w-4 h-4 text-emerald-500" />
+              <FileText className="w-4 h-4 text-accent" />
               Document Submission
             </button>
             <button
               onClick={() => handleSuggestionClick("Where is the VSU registrar office located?")}
-              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-200 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
+              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-accent/10 text-slate-600 hover:text-accent-foreground border border-slate-200 hover:border-accent/40 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
             >
-              <HelpCircle className="w-4 h-4 text-emerald-500" />
+              <HelpCircle className="w-4 h-4 text-accent" />
               Registrar Location
             </button>
           </div>
@@ -298,14 +376,14 @@ export function Chatbot() {
                 }
               }}
               placeholder="Ask VSU Assistant..."
-              className="w-full max-h-32 min-h-[64px] px-6 py-5 bg-slate-50/50 border border-slate-200 rounded-[24px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-300 resize-none scrollbar-hide"
+              className="w-full max-h-32 min-h-[64px] px-6 py-5 bg-slate-50/50 border border-slate-200 rounded-[24px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-accent/10 focus:border-accent transition-all duration-300 resize-none scrollbar-hide"
               rows={1}
             />
           </div>
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="flex-shrink-0 flex items-center justify-center w-16 h-16 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-[24px] transition-all shadow-lg shadow-emerald-200/50 active:scale-95"
+            className="flex-shrink-0 flex items-center justify-center w-16 h-16 bg-accent hover:bg-accent-hover disabled:bg-slate-200 disabled:text-slate-400 text-slate-900 rounded-[24px] transition-all shadow-lg shadow-accent/30 active:scale-95"
             suppressHydrationWarning
           >
             <Send className="w-6 h-6 ml-1" />

@@ -1,0 +1,85 @@
+import React from 'react';
+import { motion } from 'motion/react';
+import { Check, ChevronRight } from 'lucide-react';
+
+export type DocumentType = {
+  id: string;
+  label: string;
+  description: string;
+  price: number;
+};
+
+export const DOCUMENT_TYPES: DocumentType[] = [
+  { id: 'cor_ecopy', label: 'COR (e-copy)', description: 'Certificate of Registration electronic copy', price: 0 },
+  { id: 'cor_validation', label: 'COR (Validation)', description: 'Certificate of Registration for validation', price: 15 },
+  { id: 'cog', label: 'Certificate of Grades (COG)', description: 'Official copy of your grades', price: 50 },
+  { id: 'tor', label: 'Transcript of Records (TOR)', description: 'Complete academic record', price: 430 },
+  { id: 'tc', label: 'Transfer Credentials (TC)', description: 'Complete academic record', price: 630 },
+];
+
+interface DocumentSelectionProps {
+  selectedDocs: string[];
+  toggleDocument: (id: string) => void;
+  totalAmount: number;
+  onNext: () => void;
+}
+
+export function DocumentSelection({ selectedDocs, toggleDocument, totalAmount, onNext }: DocumentSelectionProps) {
+  return (
+    <motion.div
+      key="step1"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className="p-8"
+    >
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold text-slate-900 mb-2">Select Documents</h2>
+        <p className="text-slate-500">Choose the documents you need to request. You can select multiple items.</p>
+      </div>
+
+      <div className="space-y-3">
+        {DOCUMENT_TYPES.map((doc) => {
+          const isSelected = selectedDocs.includes(doc.id);
+          return (
+            <div
+              key={doc.id}
+              onClick={() => toggleDocument(doc.id)}
+              className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${isSelected ? 'border-accent bg-accent/10 shadow-sm shadow-accent/10' : 'border-slate-200 hover:border-accent hover:bg-slate-50'
+                }`}
+            >
+              <div className="flex items-center gap-4">
+                <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'border-accent bg-accent text-slate-900' : 'border-slate-300'
+                  }`}>
+                  {isSelected && <Check className="w-4 h-4" />}
+                </div>
+                <div>
+                  <h3 className={`font-semibold ${isSelected ? 'text-accent-foreground' : 'text-slate-900'}`}>
+                    {doc.label}
+                  </h3>
+                  <p className="text-sm text-slate-500">{doc.description}</p>
+                </div>
+              </div>
+              <div className="font-bold text-slate-700">
+                {doc.price > 0 ? `₱${doc.price.toFixed(2)}` : <span className="text-emerald-500 text-xs font-black uppercase tracking-widest">Free</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
+        <div className="text-slate-500">
+          Total Amount: <span className="text-2xl font-black text-slate-900 ml-2">₱{totalAmount.toFixed(2)}</span>
+        </div>
+        <button
+          onClick={onNext}
+          disabled={selectedDocs.length === 0}
+          className="px-6 py-3 bg-accent text-slate-900 font-bold rounded-2xl hover:bg-accent-hover transition-all shadow-sm hover:shadow-accent/20 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+        >
+          Continue <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
+    </motion.div>
+  );
+}
