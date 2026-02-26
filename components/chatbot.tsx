@@ -59,13 +59,13 @@ function DocumentRequestCard() {
       </div>
       <div className="p-6">
         <p className="text-slate-600 text-xs leading-relaxed mb-6">
-          Ready to apply for your documents? You can now submit your requests online through our automated portal.
+          Official document requests are reserved for students and alumni. Please sign in to your student portal to proceed.
         </p>
         <a
-          href="/dashboard/request"
+          href="/login"
           className="flex items-center justify-between w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs py-4 px-6 rounded-2xl transition-all group/btn"
         >
-          <span>Start Application</span>
+          <span>Student Sign In</span>
           <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
         </a>
       </div>
