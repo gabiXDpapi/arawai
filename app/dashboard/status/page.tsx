@@ -172,6 +172,14 @@ export default function DashboardPage() {
               Assistant
             </Link>
 
+            <Link
+              href="/dashboard/payfees"
+              className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-accent/10 hover:text-accent-foreground rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-accent/20 shadow-sm"
+            >
+              <CreditCard className="w-4 h-4" />
+              Pay Fees
+            </Link>
+
             <div className="h-8 w-[1px] bg-slate-200 mx-2 hidden sm:block"></div>
 
             <div className="hidden md:flex flex-col items-end mr-4">

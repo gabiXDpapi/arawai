@@ -18,7 +18,8 @@ import {
     MessageSquare,
     ExternalLink,
     MapPin,
-    Users
+    Users,
+    LayoutDashboard
 } from 'lucide-react';
 import Link from 'next/link';
 import { GCashPayment } from '@/components/GCashPayment';
@@ -78,6 +79,14 @@ export default function PayFeesPage() {
                     </div>
 
                     <div className="flex items-center gap-4">
+                        <Link
+                            href="/dashboard/status"
+                            className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-accent/10 hover:text-accent-foreground rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-accent/20 shadow-sm"
+                        >
+                            <LayoutDashboard className="w-4 h-4" />
+                            Document Status
+                        </Link>
+
                         <Link
                             href="/dashboard"
                             className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-accent/10 hover:text-accent-foreground rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-accent/20 shadow-sm"
