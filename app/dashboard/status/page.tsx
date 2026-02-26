@@ -69,7 +69,7 @@ export default function DashboardPage() {
       details: {
         number: 'REQ-2026-8812',
         date: 'Feb 20, 2026',
-        items: ['Transcript of Records (Official Copy)', 'Certificate of Enrollment'],
+        items: ['Transcript of Records (Official Copy)', 'Certificate of Registration (Validated)'],
         location: "Registrar's Office - Window 1",
         timeline: [
           { label: 'Request Filed', date: 'Feb 18, 2026', completed: true },
@@ -102,19 +102,23 @@ export default function DashboardPage() {
     },
     {
       id: 4,
-      title: 'Library Fines',
-      status: 'Pending Fine',
-      description: 'Overdue book return detected. Please settle your fine of ₱50.00.',
-      icon: AlertCircle,
-      color: 'bg-rose-600',
-      lightColor: 'bg-rose-50',
-      textColor: 'text-rose-700',
+      title: 'Pending Documents',
+      status: 'In Review',
+      description: 'Your submitted admission requirements are currently being verified by the Registrar.',
+      icon: FileText,
+      color: 'bg-indigo-600',
+      lightColor: 'bg-indigo-50',
+      textColor: 'text-indigo-700',
       details: {
-        number: 'LIB-FIN-092',
-        bookTitle: 'Introduction to Algorithms 4th Ed.',
-        overdueDays: '5 Days',
-        fineAmount: '₱50.00',
-        action: 'Return book and pay fine at the library counter.'
+        number: 'SUB-2026-015',
+        type: 'Admission Requirements',
+        dateSubmitted: 'Feb 24, 2026',
+        documents: [
+          { name: 'Transcript of Records', status: 'Verified' },
+          { name: 'Copy of Grades', status: 'In Review' },
+          { name: 'Transfer Credentials', status: 'Verified' }
+        ],
+        estimatedDays: '2-3 working days'
       }
     },
   ];
@@ -430,25 +434,34 @@ export default function DashboardPage() {
 
                 {selectedItem.id === 4 && (
                   <div className="space-y-6">
-                    <div className="relative group">
-                      <div className="absolute -inset-1 bg-gradient-to-r from-rose-500 to-amber-500 rounded-[36px] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-                      <div className="relative p-8 bg-white rounded-[32px] border border-slate-100 text-center">
-                        <p className="text-[10px] text-rose-500 font-black uppercase tracking-widest mb-2 italic">Outstanding Fine</p>
-                        <p className="text-5xl font-black text-slate-900 mb-2">{selectedItem.details.fineAmount}</p>
-                        <p className="text-xs text-rose-500 font-bold uppercase tracking-widest bg-rose-50 inline-block px-3 py-1 rounded-full">{selectedItem.details.overdueDays} Overdue</p>
+                    <div className="p-6 bg-indigo-50 rounded-[32px] border border-indigo-100 flex items-center justify-between">
+                      <div>
+                        <p className="text-[10px] text-indigo-500 font-black uppercase tracking-widest mb-1 italic">Verification Status</p>
+                        <p className="text-xl font-black text-indigo-900">Processing</p>
+                      </div>
+                      <div className="px-4 py-2 bg-white rounded-2xl shadow-sm border border-indigo-100">
+                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest text-center">EST. WAIT</p>
+                        <p className="text-sm font-black text-indigo-600 text-center">{selectedItem.details.estimatedDays}</p>
                       </div>
                     </div>
-                    <div className="p-5 bg-slate-50 rounded-[24px] border border-slate-100">
-                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-3 italic">Item Information</p>
-                      <div className="flex gap-4">
-                        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-rose-500 shadow-sm border border-slate-100">
-                          <Package className="w-7 h-7" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-black text-slate-900 mb-1">{selectedItem.details.bookTitle}</p>
-                          <p className="text-xs text-slate-400 leading-relaxed">{selectedItem.details.action}</p>
-                        </div>
+                    <div className="space-y-3">
+                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-1 italic">Submission Details</p>
+                      <div className="bg-white rounded-3xl border border-slate-100 divide-y divide-slate-50 overflow-hidden">
+                        {selectedItem.details.documents.map((doc: any, i: number) => (
+                          <div key={i} className="flex justify-between items-center p-4 px-6 hover:bg-slate-50 transition-colors">
+                            <span className="text-sm font-bold text-slate-700">{doc.name}</span>
+                            <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${doc.status === 'Verified' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
+                              {doc.status}
+                            </span>
+                          </div>
+                        ))}
                       </div>
+                    </div>
+                    <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl flex gap-3">
+                      <AlertCircle className="w-5 h-5 text-blue-500 shrink-0" />
+                      <p className="text-xs font-medium text-blue-700 leading-relaxed">
+                        We will notify you once all documents are verified. Please keep your original copies ready.
+                      </p>
                     </div>
                   </div>
                 )}
