@@ -2,16 +2,17 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Send, 
-  Bot, 
-  User, 
-  Sparkles, 
-  CreditCard, 
-  Smartphone, 
-  Users, 
-  Clock, 
-  CheckCircle2, 
+import Link from 'next/link';
+import {
+  Send,
+  Bot,
+  User,
+  Sparkles,
+  CreditCard,
+  Smartphone,
+  Users,
+  Clock,
+  CheckCircle2,
   ChevronRight,
   ArrowRight,
   Info,
@@ -65,7 +66,7 @@ function PaymentItinerary({ steps }: { steps: string[] }) {
       <div className="p-6 space-y-6 relative">
         {/* Connector Line */}
         <div className="absolute left-[35px] top-10 bottom-10 w-0.5 bg-slate-100"></div>
-        
+
         {steps.map((step, i) => (
           <div key={i} className="flex gap-4 relative z-10">
             <div className="flex-shrink-0 w-10 h-10 rounded-full bg-white border-2 border-emerald-500 flex items-center justify-center text-emerald-600 font-black text-sm shadow-sm">
@@ -90,7 +91,7 @@ function PaymentItinerary({ steps }: { steps: string[] }) {
 function FinesChoice({ onChoice }: { onChoice: (choice: 'online' | 'actual') => void }) {
   return (
     <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <button 
+      <button
         onClick={() => onChoice('online')}
         className="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50 transition-all group"
       >
@@ -103,8 +104,8 @@ function FinesChoice({ onChoice }: { onChoice: (choice: 'online' | 'actual') => 
         </div>
         <ChevronRight className="w-4 h-4 ml-auto text-slate-300 group-hover:text-emerald-500" />
       </button>
-      
-      <button 
+
+      <button
         onClick={() => onChoice('actual')}
         className="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50 transition-all group"
       >
@@ -123,7 +124,7 @@ function FinesChoice({ onChoice }: { onChoice: (choice: 'online' | 'actual') => 
 
 function PriorityNumberCard({ number }: { number: number }) {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       className="my-4 bg-gradient-to-br from-emerald-600 to-emerald-500 rounded-[32px] p-8 text-white shadow-xl shadow-emerald-200/50 relative overflow-hidden"
@@ -174,24 +175,24 @@ function GCashForm({ onSubmit }: { onSubmit: () => void }) {
         <div className="space-y-4">
           <div>
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">GCash Number</label>
-            <input 
-              type="text" 
-              placeholder="09XX XXX XXXX" 
+            <input
+              type="text"
+              placeholder="09XX XXX XXXX"
               className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
               required
             />
           </div>
           <div>
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Full Name</label>
-            <input 
-              type="text" 
-              placeholder="As registered in GCash" 
+            <input
+              type="text"
+              placeholder="As registered in GCash"
               className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all"
               required
             />
           </div>
         </div>
-        <button 
+        <button
           type="submit"
           disabled={isSubmitting}
           className="w-full py-5 bg-[#007DFE] hover:bg-[#0066CC] text-white font-black rounded-2xl shadow-lg shadow-blue-200 transition-all active:scale-95 flex items-center justify-center gap-2"
@@ -252,27 +253,27 @@ export function StudentChatbot() {
 
   const handleFinesChoice = (choice: 'online' | 'actual') => {
     if (choice === 'online') {
-      setMessages(prev => [...prev, 
-        { id: Date.now().toString(), role: 'user', content: 'I want to pay online.' },
-        { id: (Date.now() + 1).toString(), role: 'assistant', content: 'Great! Please fill out this GCash form to settle your fines.', type: 'gcash_form' }
+      setMessages(prev => [...prev,
+      { id: Date.now().toString(), role: 'user', content: 'I want to pay online.' },
+      { id: (Date.now() + 1).toString(), role: 'assistant', content: 'Great! Please fill out this GCash form to settle your fines.', type: 'gcash_form' }
       ]);
     } else {
-      setMessages(prev => [...prev, 
-        { id: Date.now().toString(), role: 'user', content: 'I want to pay in-person.' },
-        { id: (Date.now() + 1).toString(), role: 'assistant', content: 'Understood. I have generated a priority number for you. Please head to the Cash Division.', type: 'priority_number', data: { number: 215 } }
+      setMessages(prev => [...prev,
+      { id: Date.now().toString(), role: 'user', content: 'I want to pay in-person.' },
+      { id: (Date.now() + 1).toString(), role: 'assistant', content: 'Understood. I have generated a priority number for you. Please head to the Cash Division.', type: 'priority_number', data: { number: 215 } }
       ]);
     }
   };
 
   const handleGCashSubmit = () => {
-    setMessages(prev => [...prev, 
-      { id: Date.now().toString(), role: 'assistant', content: 'Payment successful! Your administrative fines have been cleared. You can check your updated status in the Document Status page.' }
+    setMessages(prev => [...prev,
+    { id: Date.now().toString(), role: 'assistant', content: 'Payment successful! Your administrative fines have been cleared. You can check your updated status in the Document Status page.' }
     ]);
   };
 
   const renderContent = (msg: Message) => {
     const content = msg.content;
-    
+
     // Check for Payment Itinerary
     const itineraryRegex = /\[PAYMENT_ITINERARY\]([\s\S]*?)\[\/PAYMENT_ITINERARY\]/;
     const itineraryMatch = content.match(itineraryRegex);
@@ -335,7 +336,7 @@ export function StudentChatbot() {
     try {
       const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
       if (!apiKey) throw new Error('API key is missing');
-      
+
       const aiInstance = new GoogleGenAI({ apiKey });
       let currentSession = chatSession;
       if (!currentSession) {
@@ -375,20 +376,18 @@ export function StudentChatbot() {
               className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}
             >
               <div
-                className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center ${
-                  msg.role === 'user'
-                    ? 'bg-slate-100 text-slate-500'
-                    : 'bg-emerald-500 text-white shadow-lg shadow-emerald-200'
-                }`}
+                className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center ${msg.role === 'user'
+                  ? 'bg-slate-100 text-slate-500'
+                  : 'bg-emerald-500 text-white shadow-lg shadow-emerald-200'
+                  }`}
               >
                 {msg.role === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
               </div>
               <div
-                className={`max-w-[85%] sm:max-w-[75%] rounded-[32px] px-8 py-5 ${
-                  msg.role === 'user'
-                    ? 'bg-slate-900 text-white rounded-tr-none'
-                    : 'bg-white text-slate-700 rounded-tl-none shadow-sm border border-slate-100'
-                }`}
+                className={`max-w-[85%] sm:max-w-[75%] rounded-[32px] px-8 py-5 ${msg.role === 'user'
+                  ? 'bg-slate-900 text-white rounded-tr-none'
+                  : 'bg-white text-slate-700 rounded-tl-none shadow-sm border border-slate-100'
+                  }`}
               >
                 <div className="text-sm leading-relaxed prose prose-sm prose-emerald max-w-none">
                   {renderContent(msg)}
@@ -435,13 +434,13 @@ export function StudentChatbot() {
               <Smartphone className="w-4 h-4 text-emerald-500" />
               Settle Fines
             </button>
-            <button
-              onClick={() => setInput("Where can I request my Transcript of Records?")}
+            <Link
+              href="/dashboard/request"
               className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-200 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
             >
               <FileText className="w-4 h-4 text-emerald-500" />
               Request Documents
-            </button>
+            </Link>
           </div>
         </div>
       )}

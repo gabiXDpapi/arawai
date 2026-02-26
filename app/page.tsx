@@ -2,10 +2,9 @@
 
 import { motion } from 'motion/react';
 import { Chatbot } from '@/components/chatbot';
+import { Logo } from '@/components/Logo';
 import Link from 'next/link';
-import { LogIn, ShieldCheck, Loader2 } from 'lucide-react';
-import favicon from './favicon.png';
-import Image from 'next/image';
+import { LogIn } from 'lucide-react';
 
 export default function LandingPage() {
   return (
@@ -19,14 +18,9 @@ export default function LandingPage() {
       {/* Header */}
       <header className="relative z-20 flex items-center justify-between px-6 py-6 sm:px-10 lg:px-16 backdrop-blur-xl border-b border-white/20">
         <div className="flex items-center gap-4">
-        <Image
-          src={favicon}
-          alt="na"
-          width={40}
-          height={40}
-        />          
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-        ARAW<span className="text-emerald-500">.ai</span>
+          <Logo />
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            ARAW<span className="text-emerald-500">.ai</span>
           </h1>
         </div>
 
