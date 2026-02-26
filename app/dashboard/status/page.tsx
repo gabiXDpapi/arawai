@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { 
-  ShieldCheck, 
-  FileText, 
-  Receipt, 
-  Package, 
-  CreditCard, 
-  AlertCircle, 
-  Users, 
+import { Logo } from '@/components/Logo';
+import {
+  FileText,
+  Receipt,
+  Package,
+  CreditCard,
+  AlertCircle,
+  Users,
   LogOut,
   ChevronRight,
   Clock,
@@ -76,16 +76,16 @@ export default function DashboardPage() {
       <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link 
+            <Link
               href="/dashboard"
               className="sm:hidden flex items-center justify-center w-10 h-10 bg-slate-100 text-slate-500 rounded-xl"
             >
               <MessageSquare className="w-5 h-5" />
             </Link>
-            
+
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-200/50 group-hover:scale-105 transition-transform">
-                <ShieldCheck className="w-6 h-6" />
+              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200/20 group-hover:scale-105 transition-transform border border-slate-100">
+                <Logo width={28} height={28} />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-slate-900 leading-none">ARAW<span className="text-emerald-500">.ai</span></h1>
@@ -95,14 +95,14 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link 
+            <Link
               href="/dashboard"
               className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-emerald-100 shadow-sm"
             >
               <MessageSquare className="w-4 h-4" />
               Assistant
             </Link>
-            
+
             <div className="h-8 w-[1px] bg-slate-200 mx-2 hidden sm:block"></div>
 
             <div className="hidden md:flex flex-col items-end mr-4">
@@ -113,8 +113,8 @@ export default function DashboardPage() {
               <Bell className="w-5 h-5" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
             </button>
-            <Link 
-              href="/login" 
+            <Link
+              href="/login"
               className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 rounded-xl text-sm font-bold transition-all border border-transparent hover:border-rose-100"
             >
               <LogOut className="w-4 h-4" />
@@ -126,7 +126,7 @@ export default function DashboardPage() {
 
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Main Status Area */}
           <div className="lg:col-span-2 space-y-8">
             <section>
@@ -134,7 +134,7 @@ export default function DashboardPage() {
                 <h2 className="text-2xl font-black text-slate-900 tracking-tight">Document Status</h2>
                 <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest rounded-full">4 Active Tasks</span>
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {documentStatuses.map((item, index) => (
                   <motion.div
@@ -191,14 +191,14 @@ export default function DashboardPage() {
 
           {/* Sidebar / Priority Number */}
           <div className="space-y-8">
-            <motion.section 
+            <motion.section
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               className="bg-gradient-to-br from-emerald-600 to-emerald-500 rounded-[40px] p-8 text-white shadow-2xl shadow-emerald-200 relative overflow-hidden"
             >
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
               <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-400/20 rounded-full blur-3xl"></div>
-              
+
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center">
@@ -228,10 +228,13 @@ export default function DashboardPage() {
             <section className="bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm">
               <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">Quick Actions</h3>
               <div className="grid grid-cols-2 gap-3">
-                <button className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[24px] hover:bg-emerald-50 hover:text-emerald-600 transition-all border border-transparent hover:border-emerald-100 group">
+                <Link
+                  href="/dashboard/request"
+                  className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[24px] hover:bg-emerald-50 hover:text-emerald-600 transition-all border border-transparent hover:border-emerald-100 group"
+                >
                   <FileText className="w-6 h-6 mb-2 text-slate-400 group-hover:text-emerald-500" />
                   <span className="text-xs font-bold">Request Doc</span>
-                </button>
+                </Link>
                 <button className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[24px] hover:bg-emerald-50 hover:text-emerald-600 transition-all border border-transparent hover:border-emerald-100 group">
                   <CreditCard className="w-6 h-6 mb-2 text-slate-400 group-hover:text-emerald-500" />
                   <span className="text-xs font-bold">Pay Fees</span>

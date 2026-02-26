@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
-import { Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react';
-import favicon from '../app/favicon.png';
-import Image from 'next/image';
+import { Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Logo } from './Logo';
 
 export function LoginForm() {
   const router = useRouter();
@@ -31,12 +30,7 @@ export function LoginForm() {
     <div className="w-full max-w-[420px] mx-auto">
       {/* Logo Area */}
       <div className="flex flex-col items-center mb-10">
-         <Image
-          src={favicon}
-          alt="na"
-          width={40}
-          height={40}
-        />      
+         <Logo width={48} height={48} />
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 mb-2">
           ARAW<span className="text-emerald-500">.ai</span>
         </h1>
