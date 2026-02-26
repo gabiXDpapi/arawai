@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react';
+import favicon from '../app/favicon.png';
+import Image from 'next/image';
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,13 +25,12 @@ export function LoginForm() {
     <div className="w-full max-w-[420px] mx-auto">
       {/* Logo Area */}
       <div className="flex flex-col items-center mb-10">
-        <div className="relative flex items-center justify-center w-16 h-16 mb-6 bg-white rounded-2xl shadow-sm border border-slate-100">
-          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500 to-emerald-400 rounded-2xl opacity-10 blur-md"></div>
-          <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-emerald-400 text-white">
-            <ShieldCheck className="w-6 h-6" />
-          </div>
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-amber-400 rounded-full border-2 border-white"></div>
-        </div>
+         <Image
+          src={favicon}
+          alt="na"
+          width={40}
+          height={40}
+        />      
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 mb-2">
           ARAW<span className="text-emerald-500">.ai</span>
         </h1>
