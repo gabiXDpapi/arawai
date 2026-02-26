@@ -28,11 +28,11 @@ export default function DocumentRequestPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Link href="/" className="flex items-center gap-3 group">
-                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200/20 group-hover:scale-105 transition-transform border border-slate-100">
+                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-accent/20 group-hover:scale-105 transition-transform border border-slate-100">
                                 <Logo width={28} height={28} />
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold text-slate-900 leading-none">ARAW<span className="text-emerald-500">.ai</span></h1>
+                                <h1 className="text-xl font-bold text-slate-900 leading-none">ARAW<span className="text-accent">.ai</span></h1>
                                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Student Portal</p>
                             </div>
                         </Link>
@@ -41,7 +41,7 @@ export default function DocumentRequestPage() {
                     <div className="flex items-center gap-4">
                         <Link
                             href="/dashboard/status"
-                            className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-emerald-100 shadow-sm"
+                            className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-accent/10 hover:text-accent-foreground rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-accent/20 shadow-sm"
                         >
                             <LayoutDashboard className="w-4 h-4" />
                             Document Status
@@ -49,7 +49,7 @@ export default function DocumentRequestPage() {
 
                         <Link
                             href="/dashboard"
-                            className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-emerald-100 shadow-sm"
+                            className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-accent/10 hover:text-accent-foreground rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-accent/20 shadow-sm"
                         >
                             <MessageSquare className="w-4 h-4" />
                             Assistant
@@ -62,7 +62,7 @@ export default function DocumentRequestPage() {
                             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{currentTime.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</p>
                         </div>
 
-                        <button className="p-2.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all relative">
+                        <button className="p-2.5 text-slate-400 hover:text-accent-foreground hover:bg-accent/10 rounded-xl transition-all relative">
                             <Bell className="w-5 h-5" />
                             <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
                         </button>
@@ -80,7 +80,7 @@ export default function DocumentRequestPage() {
 
             <div className="flex-1 flex flex-col max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
                 <div className="flex items-center gap-4 mb-8">
-                    <div className="w-14 h-14 bg-white rounded-[20px] shadow-sm border border-slate-100 flex items-center justify-center text-emerald-500">
+                    <div className="w-14 h-14 bg-white rounded-[20px] shadow-sm border border-slate-100 flex items-center justify-center text-accent">
                         <FileText className="w-8 h-8" />
                     </div>
                     <div>

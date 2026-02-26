@@ -45,16 +45,16 @@ export function DocumentSelection({ selectedDocs, toggleDocument, totalAmount, o
             <div
               key={doc.id}
               onClick={() => toggleDocument(doc.id)}
-              className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${isSelected ? 'border-emerald-500 bg-emerald-50/50 shadow-sm shadow-emerald-100' : 'border-slate-200 hover:border-emerald-200 hover:bg-slate-50'
+              className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${isSelected ? 'border-accent bg-accent/10 shadow-sm shadow-accent/10' : 'border-slate-200 hover:border-accent hover:bg-slate-50'
                 }`}
             >
               <div className="flex items-center gap-4">
-                <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-slate-300'
+                <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${isSelected ? 'border-accent bg-accent text-slate-900' : 'border-slate-300'
                   }`}>
                   {isSelected && <Check className="w-4 h-4" />}
                 </div>
                 <div>
-                  <h3 className={`font-semibold ${isSelected ? 'text-emerald-900' : 'text-slate-900'}`}>
+                  <h3 className={`font-semibold ${isSelected ? 'text-accent-foreground' : 'text-slate-900'}`}>
                     {doc.label}
                   </h3>
                   <p className="text-sm text-slate-500">{doc.description}</p>
@@ -75,7 +75,7 @@ export function DocumentSelection({ selectedDocs, toggleDocument, totalAmount, o
         <button
           onClick={onNext}
           disabled={selectedDocs.length === 0}
-          className="px-6 py-3 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-600 transition-all shadow-sm hover:shadow-emerald-200/50 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-6 py-3 bg-accent text-slate-900 font-bold rounded-2xl hover:bg-accent-hover transition-all shadow-sm hover:shadow-accent/20 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           Continue <ChevronRight className="w-5 h-5" />
         </button>

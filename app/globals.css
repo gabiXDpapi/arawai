@@ -1,2 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+
+@theme {
+    --color-accent: #fece00;
+    --color-accent-hover: #e5b900;
+    --color-accent-soft: rgba(254, 206, 0, 0.1);
+    --color-accent-foreground: #4a3e00;
+}

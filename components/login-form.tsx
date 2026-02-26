@@ -16,9 +16,9 @@ export function LoginForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isLoading) return;
-    
+
     setIsLoading(true);
-    
+
     // Immediate navigation for better reliability in preview environment
     // We still show the loader briefly for UX
     setTimeout(() => {
@@ -30,9 +30,9 @@ export function LoginForm() {
     <div className="w-full max-w-[420px] mx-auto">
       {/* Logo Area */}
       <div className="flex flex-col items-center mb-10">
-         <Logo width={48} height={48} />
+        <Logo width={48} height={48} />
         <h1 className="text-3xl font-semibold tracking-tight text-slate-900 mb-2">
-          ARAW<span className="text-emerald-500">.ai</span>
+          ARAW<span className="text-accent">.ai</span>
         </h1>
         <p className="text-sm text-slate-500 text-center max-w-[280px]">
           Automate Registrar and Administrative Workflows
@@ -57,7 +57,7 @@ export function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@university.edu"
-                className="w-full px-5 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
+                className="w-full px-5 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-200"
                 required
                 suppressHydrationWarning
               />
@@ -69,7 +69,7 @@ export function LoginForm() {
               <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">
                 Password
               </label>
-              <a href="#" className="text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors">
+              <a href="#" className="text-xs font-medium text-accent-foreground hover:text-accent-hover transition-colors">
                 Forgot?
               </a>
             </div>
@@ -79,7 +79,7 @@ export function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-5 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
+                className="w-full px-5 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all duration-200"
                 required
                 suppressHydrationWarning
               />
@@ -98,13 +98,13 @@ export function LoginForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white font-medium py-4 px-6 rounded-2xl transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden"
+              className="group relative w-full flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover active:bg-accent text-slate-900 font-medium py-4 px-6 rounded-2xl transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden shadow-lg shadow-accent/20"
               suppressHydrationWarning
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-accent to-accent-hover opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative flex items-center gap-2">
                 {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-5 h-5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin" />
                 ) : (
                   <>
                     Sign In
@@ -119,15 +119,15 @@ export function LoginForm() {
         <div className="mt-8 pt-6 border-t border-slate-100 text-center space-y-4">
           <p className="text-sm text-slate-500">
             Need access?{' '}
-            <a href="#" className="font-medium text-slate-900 hover:text-emerald-600 transition-colors relative inline-block">
+            <a href="#" className="font-medium text-slate-900 hover:text-accent-foreground transition-colors relative inline-block">
               Contact Administrator
-              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-amber-400 rounded-full scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></span>
+              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-accent rounded-full scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></span>
             </a>
           </p>
-          <button 
+          <button
             type="button"
             onClick={() => router.push('/dashboard')}
-            className="text-xs font-bold text-emerald-600 hover:underline uppercase tracking-widest"
+            className="text-xs font-bold text-accent-foreground hover:underline uppercase tracking-widest"
           >
             Demo Login (Bypass)
           </button>

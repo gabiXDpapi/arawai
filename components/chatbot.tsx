@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, Bot, User, Sparkles, FileText, HelpCircle, UserPlus, CheckCircle2, ShieldCheck, ListChecks, ArrowRight } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
@@ -83,10 +83,10 @@ function TodoCard({ tasks }: { tasks: string[] }) {
   };
 
   return (
-    <div className="my-4 bg-white rounded-2xl border border-emerald-100 shadow-sm overflow-hidden">
-      <div className="bg-emerald-50 px-5 py-3 border-b border-emerald-100 flex items-center gap-2">
-        <ListChecks className="w-4 h-4 text-emerald-600" />
-        <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider">Enrollment Checklist</span>
+    <div className="my-4 bg-white rounded-2xl border border-accent/20 shadow-sm overflow-hidden">
+      <div className="bg-accent/10 px-5 py-3 border-b border-accent/20 flex items-center gap-2">
+        <ListChecks className="w-4 h-4 text-accent-foreground" />
+        <span className="text-xs font-bold text-accent-foreground uppercase tracking-wider">Enrollment Checklist</span>
       </div>
       <div className="p-4 space-y-2">
         {items.map(item => (
@@ -95,7 +95,7 @@ function TodoCard({ tasks }: { tasks: string[] }) {
             onClick={() => toggle(item.id)}
             className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors group"
           >
-            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${item.completed ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-200 group-hover:border-emerald-300'
+            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${item.completed ? 'bg-accent border-accent text-slate-900' : 'border-slate-200 group-hover:border-accent'
               }`}>
               {item.completed && <CheckCircle2 className="w-3 h-3" />}
             </div>
@@ -126,7 +126,7 @@ export function Chatbot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [chatSession, setChatSession] = useState<any>(null);
 
-  const renderContent = (content: string) => {
+  const renderContent = (content: string): ReactNode => {
     // Check for Todo List first
     const todoRegex = /\[TODO_LIST\]([\s\S]*?)\[\/TODO_LIST\]/;
     const todoMatch = content.match(todoRegex);
@@ -263,15 +263,15 @@ export function Chatbot() {
       <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100/50 bg-white/40 backdrop-blur-md z-10">
         <div className="flex items-center gap-4">
           <div className="relative">
-            <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-emerald-400 text-white shadow-lg shadow-emerald-200/50">
+            <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-tr from-accent to-accent-hover text-slate-900 shadow-lg shadow-accent/30">
               <Bot className="w-6 h-6" />
             </div>
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-4 border-white"></div>
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-accent rounded-full border-4 border-white"></div>
           </div>
           <div>
             <h2 className="font-bold text-slate-900 tracking-tight">VSU Admissions Assistant</h2>
-            <p className="text-[11px] text-emerald-600 font-bold uppercase tracking-widest flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <p className="text-[11px] text-accent-foreground font-bold uppercase tracking-widest flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
               Visayas State University
             </p>
           </div>
@@ -291,21 +291,21 @@ export function Chatbot() {
               <div
                 className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${msg.role === 'user'
                   ? 'bg-slate-200 text-slate-600'
-                  : 'bg-emerald-100 text-emerald-600'
+                  : 'bg-accent text-accent-foreground'
                   }`}
               >
                 {msg.role === 'user' ? <User className="w-4 h-4" /> : <Sparkles className="w-4 h-4" />}
               </div>
               <div
                 className={`max-w-[85%] rounded-[24px] px-6 py-4 ${msg.role === 'user'
-                  ? 'bg-emerald-500 text-white rounded-tr-none shadow-lg shadow-emerald-200/20'
+                  ? 'bg-accent text-slate-900 rounded-tr-none shadow-lg shadow-accent/20'
                   : 'bg-white text-slate-700 rounded-tl-none shadow-sm border border-slate-100/50'
                   }`}
               >
                 {msg.role === 'user' ? (
                   <p className="text-sm leading-relaxed">{msg.content}</p>
                 ) : (
-                  <div className="text-sm leading-relaxed prose prose-sm prose-emerald max-w-none">
+                  <div className="text-sm leading-relaxed prose prose-sm prose-slate max-w-none">
                     {renderContent(msg.content)}
                   </div>
                 )}
@@ -318,13 +318,13 @@ export function Chatbot() {
               animate={{ opacity: 1, y: 0 }}
               className="flex gap-4"
             >
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent text-accent-foreground flex items-center justify-center">
                 <Sparkles className="w-4 h-4" />
               </div>
               <div className="bg-white text-slate-700 rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm border border-slate-100 flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </motion.div>
           )}
@@ -339,23 +339,23 @@ export function Chatbot() {
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => handleSuggestionClick("What are the requirements for freshman enrollment at VSU?")}
-              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-200 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
+              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-accent/10 text-slate-600 hover:text-accent-foreground border border-slate-200 hover:border-accent/40 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
             >
-              <UserPlus className="w-4 h-4 text-emerald-500" />
+              <UserPlus className="w-4 h-4 text-accent" />
               VSU Requirements
             </button>
             <button
               onClick={() => handleSuggestionClick("How do I submit my application documents to VSU registrar?")}
-              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-200 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
+              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-accent/10 text-slate-600 hover:text-accent-foreground border border-slate-200 hover:border-accent/40 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
             >
-              <FileText className="w-4 h-4 text-emerald-500" />
+              <FileText className="w-4 h-4 text-accent" />
               Document Submission
             </button>
             <button
               onClick={() => handleSuggestionClick("Where is the VSU registrar office located?")}
-              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-200 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
+              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-accent/10 text-slate-600 hover:text-accent-foreground border border-slate-200 hover:border-accent/40 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
             >
-              <HelpCircle className="w-4 h-4 text-emerald-500" />
+              <HelpCircle className="w-4 h-4 text-accent" />
               Registrar Location
             </button>
           </div>
@@ -376,14 +376,14 @@ export function Chatbot() {
                 }
               }}
               placeholder="Ask VSU Assistant..."
-              className="w-full max-h-32 min-h-[64px] px-6 py-5 bg-slate-50/50 border border-slate-200 rounded-[24px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-300 resize-none scrollbar-hide"
+              className="w-full max-h-32 min-h-[64px] px-6 py-5 bg-slate-50/50 border border-slate-200 rounded-[24px] text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-accent/10 focus:border-accent transition-all duration-300 resize-none scrollbar-hide"
               rows={1}
             />
           </div>
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="flex-shrink-0 flex items-center justify-center w-16 h-16 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-[24px] transition-all shadow-lg shadow-emerald-200/50 active:scale-95"
+            className="flex-shrink-0 flex items-center justify-center w-16 h-16 bg-accent hover:bg-accent-hover disabled:bg-slate-200 disabled:text-slate-400 text-slate-900 rounded-[24px] transition-all shadow-lg shadow-accent/30 active:scale-95"
             suppressHydrationWarning
           >
             <Send className="w-6 h-6 ml-1" />

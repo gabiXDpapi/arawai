@@ -42,11 +42,11 @@ export default function DashboardPage() {
       id: 2,
       title: 'Application Documents',
       status: 'To Pickup',
-      description: 'Your requested documents are ready for collection at the Registrar\'s office.',
+      description: "Your requested documents are ready for collection at the Registrar's office.",
       icon: Package,
-      color: 'bg-emerald-500',
-      lightColor: 'bg-emerald-50',
-      textColor: 'text-emerald-700',
+      color: 'bg-accent',
+      lightColor: 'bg-accent/10',
+      textColor: 'text-accent-foreground',
     },
     {
       id: 3,
@@ -84,11 +84,11 @@ export default function DashboardPage() {
             </Link>
 
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200/20 group-hover:scale-105 transition-transform border border-slate-100">
+              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-lg shadow-accent/20 group-hover:scale-105 transition-transform border border-slate-100">
                 <Logo width={28} height={28} />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-900 leading-none">ARAW<span className="text-emerald-500">.ai</span></h1>
+                <h1 className="text-xl font-bold text-slate-900 leading-none">ARAW<span className="text-accent">.ai</span></h1>
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Student Portal</p>
               </div>
             </Link>
@@ -97,7 +97,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard"
-              className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-emerald-100 shadow-sm"
+              className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-accent/10 hover:text-accent-foreground rounded-2xl text-xs font-black uppercase tracking-widest transition-all border border-transparent hover:border-accent/20 shadow-sm"
             >
               <MessageSquare className="w-4 h-4" />
               Assistant
@@ -109,7 +109,7 @@ export default function DashboardPage() {
               <p className="text-sm font-bold text-slate-900">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{currentTime.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</p>
             </div>
-            <button className="p-2.5 text-slate-400 hover:text-emerald-500 hover:bg-emerald-50 rounded-xl transition-all relative">
+            <button className="p-2.5 text-slate-400 hover:text-accent-foreground hover:bg-accent/10 rounded-xl transition-all relative">
               <Bell className="w-5 h-5" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
             </button>
@@ -132,7 +132,7 @@ export default function DashboardPage() {
             <section>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-black text-slate-900 tracking-tight">Document Status</h2>
-                <span className="px-3 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest rounded-full">4 Active Tasks</span>
+                <span className="px-3 py-1 bg-accent/20 text-accent-foreground text-[10px] font-black uppercase tracking-widest rounded-full">4 Active Tasks</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -154,7 +154,7 @@ export default function DashboardPage() {
                     </div>
                     <h3 className="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
                     <p className="text-sm text-slate-500 leading-relaxed mb-4">{item.description}</p>
-                    <div className="flex items-center text-xs font-bold text-emerald-600 group-hover:gap-2 transition-all">
+                    <div className="flex items-center text-xs font-bold text-accent-foreground group-hover:gap-2 transition-all">
                       View Details <ChevronRight className="w-3 h-3" />
                     </div>
                   </motion.div>
@@ -194,10 +194,10 @@ export default function DashboardPage() {
             <motion.section
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-gradient-to-br from-emerald-600 to-emerald-500 rounded-[40px] p-8 text-white shadow-2xl shadow-emerald-200 relative overflow-hidden"
+              className="bg-gradient-to-br from-accent to-accent-hover rounded-[40px] p-8 text-slate-900 shadow-2xl shadow-accent/20 relative overflow-hidden"
             >
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-400/20 rounded-full blur-3xl"></div>
+              <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-accent/20 rounded-full blur-3xl"></div>
 
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-8">
@@ -216,7 +216,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <button className="w-full py-4 bg-white text-emerald-600 font-black rounded-2xl shadow-lg hover:bg-emerald-50 transition-all active:scale-95">
+                  <button className="w-full py-4 bg-white text-accent-foreground font-black rounded-2xl shadow-lg hover:bg-slate-50 transition-all active:scale-95">
                     Refresh Status
                   </button>
                   <p className="text-[10px] text-center opacity-60 font-medium">Last updated: Just now</p>
@@ -230,13 +230,13 @@ export default function DashboardPage() {
               <div className="grid grid-cols-2 gap-3">
                 <Link
                   href="/dashboard/request"
-                  className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[24px] hover:bg-emerald-50 hover:text-emerald-600 transition-all border border-transparent hover:border-emerald-100 group"
+                  className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[24px] hover:bg-accent/10 hover:text-accent-foreground transition-all border border-transparent hover:border-accent/20 group"
                 >
-                  <FileText className="w-6 h-6 mb-2 text-slate-400 group-hover:text-emerald-500" />
+                  <FileText className="w-6 h-6 mb-2 text-slate-400 group-hover:text-accent" />
                   <span className="text-xs font-bold">Request Doc</span>
                 </Link>
-                <button className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[24px] hover:bg-emerald-50 hover:text-emerald-600 transition-all border border-transparent hover:border-emerald-100 group">
-                  <CreditCard className="w-6 h-6 mb-2 text-slate-400 group-hover:text-emerald-500" />
+                <button className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[24px] hover:bg-accent/10 hover:text-accent-foreground transition-all border border-transparent hover:border-accent/20 group">
+                  <CreditCard className="w-6 h-6 mb-2 text-slate-400 group-hover:text-accent" />
                   <span className="text-xs font-bold">Pay Fees</span>
                 </button>
               </div>
