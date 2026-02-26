@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Logo } from '@/components/Logo';
 import {
   FileText,
@@ -14,18 +14,41 @@ import {
   ChevronRight,
   Clock,
   Bell,
-  MessageSquare
+  MessageSquare,
+  X,
+  Calendar,
+  MapPin,
+  CheckCircle2,
+  ExternalLink,
+  RefreshCw
 } from 'lucide-react';
 import Link from 'next/link';
+import { GCashPayment } from '@/components/GCashPayment';
 
 export default function DashboardPage() {
   const [priorityNumber, setPriorityNumber] = useState(142);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showManualSuccess, setShowManualSuccess] = useState(false);
+  const [userTicket, setUserTicket] = useState<number | null>(null);
+  const [nextTicketNumber, setNextTicketNumber] = useState(155);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    // Simulate a network request
+    setTimeout(() => {
+      setPriorityNumber(prev => Math.max(1, prev - Math.floor(Math.random() * 3)));
+      setIsRefreshing(false);
+    }, 1500);
+  };
 
   const documentStatuses = [
     {
@@ -34,9 +57,22 @@ export default function DashboardPage() {
       status: 'To Receive',
       description: 'Your payment has been verified. Please proceed to the window to receive your receipt.',
       icon: Receipt,
-      color: 'bg-blue-500',
+      color: 'bg-blue-600',
       lightColor: 'bg-blue-50',
       textColor: 'text-blue-700',
+      details: {
+        number: 'OR-2026-0422',
+        date: 'Feb 22, 2026',
+        amount: '₱550.00',
+        method: 'GCash',
+        location: 'Cashier Window 3',
+        timeline: [
+          { label: 'Payment Submitted', date: 'Feb 21, 2026', completed: true },
+          { label: 'Verification Process', date: 'Feb 21, 2026', completed: true },
+          { label: 'Receipt Printed', date: 'Feb 22, 2026', completed: true },
+          { label: 'Ready for Pickup', date: 'Today', completed: false }
+        ]
+      }
     },
     {
       id: 2,
@@ -47,26 +83,59 @@ export default function DashboardPage() {
       color: 'bg-accent',
       lightColor: 'bg-accent/10',
       textColor: 'text-accent-foreground',
+      details: {
+        number: 'REQ-2026-8812',
+        date: 'Feb 20, 2026',
+        items: ['Transcript of Records (Official Copy)', 'Certificate of Registration (Validated)'],
+        location: "Registrar's Office - Window 1",
+        timeline: [
+          { label: 'Request Filed', date: 'Feb 18, 2026', completed: true },
+          { label: 'Payment Confirmed', date: 'Feb 18, 2026', completed: true },
+          { label: 'Processing', date: 'Feb 19, 2026', completed: true },
+          { label: 'Available for Pickup', date: 'Feb 20, 2026', completed: true }
+        ]
+      }
     },
     {
       id: 3,
-      title: 'Enrollment Fees',
+      title: 'Admin Fees',
       status: 'To Pay',
       description: 'Pending payment for the current semester. Please settle at the Cashier.',
       icon: CreditCard,
-      color: 'bg-amber-500',
+      color: 'bg-amber-600',
       lightColor: 'bg-amber-50',
       textColor: 'text-amber-700',
+      details: {
+        number: 'SEM-2026-2',
+        period: 'Second Semester 2025-2026',
+        amount: '₱500.000',
+        dueDate: 'March 15, 2026',
+        breakdown: [
+          { name: 'Library Fees', value: '₱250.00' },
+          { name: 'Late Enrollment Fee', value: '₱250.00' }
+        ]
+      }
     },
     {
       id: 4,
-      title: 'Library Fines',
-      status: 'Pending Fine',
-      description: 'Overdue book return detected. Please settle your fine of ₱50.00.',
-      icon: AlertCircle,
-      color: 'bg-rose-500',
-      lightColor: 'bg-rose-50',
-      textColor: 'text-rose-700',
+      title: 'Pending Documents',
+      status: 'In Review',
+      description: 'Your submitted admission requirements are currently being verified by the Registrar.',
+      icon: FileText,
+      color: 'bg-indigo-600',
+      lightColor: 'bg-indigo-50',
+      textColor: 'text-indigo-700',
+      details: {
+        number: 'SUB-2026-015',
+        type: 'Admission Requirements',
+        dateSubmitted: 'Feb 24, 2026',
+        documents: [
+          { name: 'Transcript of Records', status: 'Verified' },
+          { name: 'Copy of Grades', status: 'In Review' },
+          { name: 'Transfer Credentials', status: 'Verified' }
+        ],
+        estimatedDays: '2-3 working days'
+      }
     },
   ];
 
@@ -143,6 +212,10 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group cursor-pointer"
+                    onClick={() => {
+                      setSelectedItem(item);
+                      setShowPayment(false);
+                    }}
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className={`w-12 h-12 ${item.lightColor} rounded-2xl flex items-center justify-center ${item.textColor} group-hover:scale-110 transition-transform`}>
@@ -207,19 +280,37 @@ export default function DashboardPage() {
                   <h2 className="text-lg font-bold uppercase tracking-widest opacity-90">Cash Division</h2>
                 </div>
 
-                <div className="text-center mb-8">
-                  <p className="text-sm font-medium opacity-80 mb-2">Current Priority Number</p>
-                  <div className="text-7xl font-black tracking-tighter mb-2">{priorityNumber}</div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-widest">
-                    <Clock className="w-3 h-3" /> Estimated Wait: 15 mins
+                <div className="text-center mb-8 text-white">
+                  <p className="text-sm font-medium opacity-80 mb-2">
+                    {userTicket ? 'Your Priority Number' : 'Current Priority Number'}
+                  </p>
+                  <div className="text-7xl font-black tracking-tighter mb-2">
+                    {userTicket || priorityNumber}
                   </div>
+                  {userTicket ? (
+                    <div className="inline-flex flex-col items-center gap-1">
+                      <div className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                        <Users className="w-3 h-3" /> Now Serving: #{priorityNumber}
+                      </div>
+                      <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest mt-2">{userTicket - priorityNumber} people ahead of you</p>
+                    </div>
+                  ) : (
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-widest">
+                      <Clock className="w-3 h-3" /> Estimated Wait: 15 mins
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-3">
-                  <button className="w-full py-4 bg-white text-accent-foreground font-black rounded-2xl shadow-lg hover:bg-slate-50 transition-all active:scale-95">
-                    Refresh Status
+                  <button
+                    onClick={handleRefresh}
+                    disabled={isRefreshing}
+                    className="w-full py-4 bg-white text-accent-foreground font-black rounded-2xl shadow-lg hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    {isRefreshing ? 'Checking...' : 'Refresh Status'}
                   </button>
-                  <p className="text-[10px] text-center opacity-60 font-medium">Last updated: Just now</p>
+                  <p className="text-[10px] text-center opacity-60 font-medium">Last updated: {isRefreshing ? 'Updating...' : 'Just now'}</p>
                 </div>
               </div>
             </motion.section>
@@ -235,16 +326,358 @@ export default function DashboardPage() {
                   <FileText className="w-6 h-6 mb-2 text-slate-400 group-hover:text-accent" />
                   <span className="text-xs font-bold">Request Doc</span>
                 </Link>
-                <button className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[24px] hover:bg-accent/10 hover:text-accent-foreground transition-all border border-transparent hover:border-accent/20 group">
+                <Link
+                  href="/dashboard/payfees"
+                  className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-[24px] hover:bg-accent/10 hover:text-accent-foreground transition-all border border-transparent hover:border-accent/20 group text-center w-full"
+                >
                   <CreditCard className="w-6 h-6 mb-2 text-slate-400 group-hover:text-accent" />
                   <span className="text-xs font-bold">Pay Fees</span>
-                </button>
+                </Link>
               </div>
             </section>
           </div>
-
         </div>
       </div>
+
+      {/* Status Detail Popup */}
+      <AnimatePresence>
+        {selectedItem && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 pb-20 sm:pb-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedItem(null)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              className="relative w-full max-w-lg bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-100 flex flex-col"
+            >
+              {showPayment ? (
+                <GCashPayment
+                  totalAmount={parseFloat(selectedItem.details.amount.replace('₱', '').replace(',', ''))}
+                  onBack={() => setShowPayment(false)}
+                  onSubmit={() => {
+                    setShowPayment(false);
+                    setShowSuccess(true);
+                    // Update status locally for feedback
+                    if (selectedItem) {
+                      selectedItem.status = 'Processing';
+                    }
+                  }}
+                />
+              ) : (
+                <>
+                  {/* Modal Header */}
+                  <div className={`p-8 ${selectedItem.lightColor} relative`}>
+                    <button
+                      onClick={() => setSelectedItem(null)}
+                      className="absolute top-6 right-6 p-2 bg-white/50 hover:bg-white rounded-xl text-slate-500 hover:text-slate-900 transition-all z-10"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+
+                    <div className="flex items-center gap-5 mb-6 relative z-0">
+                      <div className={`w-16 h-16 ${selectedItem.color} rounded-[24px] flex items-center justify-center text-white shadow-xl shadow-slate-200/50 rotate-3`}>
+                        <selectedItem.icon className="w-8 h-8 -rotate-3" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-black text-slate-900 leading-tight">{selectedItem.title}</h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 ${selectedItem.color} text-white rounded-lg`}>
+                            {selectedItem.status}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                            {selectedItem.details.number}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="text-sm text-slate-600 font-medium leading-relaxed">
+                      {selectedItem.description}
+                    </p>
+                  </div>
+
+                  {/* Modal Body */}
+                  <div className="p-8 space-y-6 max-h-[50vh] overflow-y-auto">
+                    {selectedItem.id === 1 && (
+                      <div className="space-y-6">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="p-5 bg-slate-50 rounded-[24px] border border-slate-100">
+                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 italic">Total Paid</p>
+                            <p className="text-xl font-black text-slate-900">{selectedItem.details.amount}</p>
+                          </div>
+                          <div className="p-5 bg-slate-50 rounded-[24px] border border-slate-100">
+                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 italic">Channel</p>
+                            <p className="text-xl font-black text-slate-900">{selectedItem.details.method}</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2 px-1">
+                            <Clock className="w-3 h-3" /> Status Timeline
+                          </h4>
+                          <div className="space-y-4 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
+                            {selectedItem.details.timeline.map((step: any, i: number) => (
+                              <div key={i} className="flex items-start gap-4 relative z-10">
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center border-4 border-white shadow-sm ${step.completed ? 'bg-green-500 text-white' : 'bg-slate-200 text-white'}`}>
+                                  <CheckCircle2 className="w-3 h-3" />
+                                </div>
+                                <div className="flex-1">
+                                  <p className={`text-sm font-bold ${step.completed ? 'text-slate-900' : 'text-slate-400'}`}>{step.label}</p>
+                                  <p className="text-[10px] text-slate-400">{step.date}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedItem.id === 2 && (
+                      <div className="space-y-6">
+                        <div className="space-y-3">
+                          <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-1">Included Documents</h4>
+                          {selectedItem.details.items.map((doc: string, i: number) => (
+                            <div key={i} className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:border-accent/20 transition-all cursor-default">
+                              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-accent shadow-sm">
+                                <FileText className="w-5 h-5" />
+                              </div>
+                              <p className="text-sm font-bold text-slate-900">{doc}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="p-5 bg-accent/5 border-2 border-dashed border-accent/20 rounded-3xl flex items-center gap-4 text-accent-foreground">
+                          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-accent/10">
+                            <MapPin className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] opacity-70 font-black uppercase tracking-widest">Collector Window</p>
+                            <p className="text-sm font-black">{selectedItem.details.location}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedItem.id === 3 && (
+                      <div className="space-y-6">
+                        <div className="p-8 bg-amber-50 rounded-[32px] border border-amber-100 text-center relative overflow-hidden">
+                          <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-200/20 rounded-full blur-2xl"></div>
+                          <p className="text-[10px] text-amber-600 font-black uppercase tracking-widest mb-2">Total Balance Due</p>
+                          <p className="text-4xl font-black text-amber-700">{selectedItem.details.amount}</p>
+                          <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-amber-600 text-white rounded-full text-[10px] font-black uppercase tracking-widest">
+                            <Calendar className="w-3 h-3" /> {selectedItem.details.dueDate}
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-1 italic">Payment Details</h4>
+                          <div className="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-50">
+                            {selectedItem.details.breakdown.map((fee: any, i: number) => (
+                              <div key={i} className="flex justify-between p-4 px-6">
+                                <span className="text-sm font-medium text-slate-500">{fee.name}</span>
+                                <span className="text-sm font-bold text-slate-900">{fee.value}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedItem.id === 4 && (
+                      <div className="space-y-6">
+                        <div className="p-6 bg-indigo-50 rounded-[32px] border border-indigo-100 flex items-center justify-between">
+                          <div>
+                            <p className="text-[10px] text-indigo-500 font-black uppercase tracking-widest mb-1 italic">Verification Status</p>
+                            <p className="text-xl font-black text-indigo-900">Processing</p>
+                          </div>
+                          <div className="px-4 py-2 bg-white rounded-2xl shadow-sm border border-indigo-100">
+                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest text-center">EST. WAIT</p>
+                            <p className="text-sm font-black text-indigo-600 text-center">{selectedItem.details.estimatedDays}</p>
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-1 italic">Submission Details</p>
+                          <div className="bg-white rounded-3xl border border-slate-100 divide-y divide-slate-50 overflow-hidden">
+                            {selectedItem.details.documents.map((doc: any, i: number) => (
+                              <div key={i} className="flex justify-between items-center p-4 px-6 hover:bg-slate-50 transition-colors">
+                                <span className="text-sm font-bold text-slate-700">{doc.name}</span>
+                                <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${doc.status === 'Verified' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
+                                  {doc.status}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl flex gap-3">
+                          <AlertCircle className="w-5 h-5 text-blue-500 shrink-0" />
+                          <p className="text-xs font-medium text-blue-700 leading-relaxed">
+                            We will notify you once all documents are verified. Please keep your original copies ready.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Modal Footer */}
+                  <div className="p-8 pt-0 bg-white">
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setSelectedItem(null)}
+                        className="flex-1 py-4 bg-slate-100 text-slate-600 font-black rounded-2xl hover:bg-slate-200 transition-all active:scale-95 text-xs uppercase tracking-widest"
+                      >
+                        Dismiss
+                      </button>
+                      {selectedItem.status === 'To Pay' ? (
+                        <>
+                          <button
+                            onClick={() => {
+                              setUserTicket(nextTicketNumber);
+                              setNextTicketNumber(prev => prev + 1);
+                              setShowManualSuccess(true);
+                              setSelectedItem(null);
+                            }}
+                            className="flex-1 py-4 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2"
+                          >
+                            <MapPin className="w-4 h-4" /> Manual
+                          </button>
+                          <button
+                            onClick={() => setShowPayment(true)}
+                            className={`flex-1 py-4 ${selectedItem.color} text-white font-black rounded-2xl shadow-xl hover:brightness-110 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2`}
+                          >
+                            <CreditCard className="w-4 h-4" /> Online
+                          </button>
+                        </>
+                      ) : (
+                        <button className={`flex-[1.5] py-4 ${selectedItem.color} text-white font-black rounded-2xl shadow-xl hover:brightness-110 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2`}>
+                          <ExternalLink className="w-4 h-4" /> View Full Details
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-center text-slate-400 mt-6 font-bold uppercase tracking-[0.2em]">ARAW.ai Security Verified</p>
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Success Modal */}
+      <AnimatePresence>
+        {showSuccess && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowSuccess(false)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              className="relative w-full max-w-sm bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-100 p-8 text-center"
+            >
+              <div className="w-20 h-20 bg-green-100 rounded-3xl flex items-center justify-center text-green-600 mx-auto mb-6 shadow-lg shadow-green-100/50">
+                <CheckCircle2 className="w-10 h-10" />
+              </div>
+
+              <h3 className="text-2xl font-black text-slate-900 mb-2">Payment Successful!</h3>
+              <p className="text-sm text-slate-500 font-medium leading-relaxed mb-8">
+                Your payment has been received and is now being processed. We'll notify you once it's finalized.
+              </p>
+
+              <button
+                onClick={() => {
+                  setShowSuccess(false);
+                  setSelectedItem(null);
+                }}
+                className="w-full py-4 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95 text-xs uppercase tracking-widest"
+              >
+                Got it, thanks!
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Manual Success Ticket Modal */}
+      <AnimatePresence>
+        {showManualSuccess && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowManualSuccess(false)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              className="relative w-full max-w-sm bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-100 flex flex-col"
+            >
+              <div className="p-8 bg-slate-900 text-white text-center relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
+                  <Users className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-black uppercase tracking-[0.2em]">Queue Ticket</h3>
+                <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest mt-1">Cash Division • Manual Payment</p>
+              </div>
+
+              <div className="p-8 space-y-8 bg-white text-center">
+                <div>
+                  <p className="text-[11px] text-slate-400 font-black uppercase tracking-widest mb-2">Your Priority Number</p>
+                  <div className="text-7xl font-black text-slate-900 tracking-tighter">
+                    {userTicket}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 italic">
+                  <Clock className="w-5 h-5 text-slate-400" />
+                  <div className="text-left">
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Est. Serving Time</p>
+                    <p className="text-sm font-bold text-slate-900">Approximately 25 mins</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-4 border-t border-dashed border-slate-200">
+                  <div className="flex justify-between text-xs font-bold text-slate-900">
+                    <span className="text-slate-400">Transaction ID</span>
+                    <span>#ARW-QN-{userTicket}</span>
+                  </div>
+                  <div className="flex justify-between text-xs font-bold text-slate-900">
+                    <span className="text-slate-400">Counter Window</span>
+                    <span>Window 2-4</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8 pt-0 bg-white">
+                <button
+                  onClick={() => setShowManualSuccess(false)}
+                  className="w-full py-4 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95 text-xs uppercase tracking-widest"
+                >
+                  Done, Proceed to Cashier
+                </button>
+                <div className="mt-4 flex justify-between px-2 relative">
+                  <div className="absolute -left-10 top-0 w-6 h-6 bg-slate-50 rounded-full border border-slate-100"></div>
+                  <div className="absolute -right-10 top-0 w-6 h-6 bg-slate-50 rounded-full border border-slate-100"></div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
