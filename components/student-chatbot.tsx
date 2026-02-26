@@ -57,14 +57,14 @@ If a user asks about things outside of VSU administrative workflows, politely re
 
 function DocumentRequestCard() {
   return (
-    <div className="my-6 bg-white rounded-[32px] border border-emerald-100 shadow-xl shadow-emerald-500/5 overflow-hidden group hover:scale-[1.02] transition-all duration-300">
-      <div className="relative h-24 bg-gradient-to-br from-emerald-500 to-teal-600 p-6 flex items-end overflow-hidden">
+    <div className="my-6 bg-white rounded-[32px] border border-accent/20 shadow-xl shadow-accent/5 overflow-hidden group hover:scale-[1.02] transition-all duration-300">
+      <div className="relative h-24 bg-gradient-to-br from-accent to-accent-hover p-6 flex items-end overflow-hidden">
         <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform duration-500">
           <FileText className="w-32 h-32 -mr-8 -mt-8 text-white rotate-12" />
         </div>
         <div className="relative z-10">
           <h3 className="text-white font-bold text-lg leading-tight">Request Documents</h3>
-          <p className="text-emerald-50/80 text-[10px] font-medium uppercase tracking-[0.1em]">VSU Registrar Portal</p>
+          <p className="text-accent-foreground opacity-80 text-[10px] font-medium uppercase tracking-[0.1em]">VSU Registrar Portal</p>
         </div>
       </div>
       <div className="p-6">
@@ -73,7 +73,7 @@ function DocumentRequestCard() {
         </p>
         <Link
           href="/dashboard/request"
-          className="flex items-center justify-between w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs py-4 px-6 rounded-2xl transition-all group/btn"
+          className="flex items-center justify-between w-full bg-accent/10 hover:bg-accent/20 text-accent-foreground font-bold text-xs py-4 px-6 rounded-2xl transition-all group/btn"
         >
           <span>Start Application</span>
           <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -85,14 +85,14 @@ function DocumentRequestCard() {
 
 function PaymentItinerary({ steps }: { steps: string[] }) {
   return (
-    <div className="my-4 bg-white rounded-3xl border border-emerald-100 shadow-sm overflow-hidden">
-      <div className="bg-emerald-50 px-6 py-4 border-b border-emerald-100 flex items-center gap-3">
-        <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center text-white">
+    <div className="my-4 bg-white rounded-3xl border border-accent/20 shadow-sm overflow-hidden">
+      <div className="bg-accent/10 px-6 py-4 border-b border-accent/20 flex items-center gap-3">
+        <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center text-slate-900">
           <Info className="w-5 h-5" />
         </div>
         <div>
-          <span className="text-xs font-black text-emerald-800 uppercase tracking-widest">Payment Itinerary</span>
-          <p className="text-[10px] text-emerald-600 font-bold">Step-by-step Guide</p>
+          <span className="text-xs font-black text-accent-foreground uppercase tracking-widest">Payment Itinerary</span>
+          <p className="text-[10px] text-accent-foreground opacity-80 font-bold">Step-by-step Guide</p>
         </div>
       </div>
       <div className="p-6 space-y-6 relative">
@@ -101,7 +101,7 @@ function PaymentItinerary({ steps }: { steps: string[] }) {
 
         {steps.map((step, i) => (
           <div key={i} className="flex gap-4 relative z-10">
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-white border-2 border-emerald-500 flex items-center justify-center text-emerald-600 font-black text-sm shadow-sm">
+            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-white border-2 border-accent flex items-center justify-center text-accent-foreground font-black text-sm shadow-sm">
               {i + 1}
             </div>
             <div className="pt-1">
@@ -112,7 +112,7 @@ function PaymentItinerary({ steps }: { steps: string[] }) {
       </div>
       <div className="bg-slate-50 px-6 py-3 border-t border-slate-100 flex justify-between items-center">
         <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">VSU Cashier</span>
-        <div className="flex items-center gap-1 text-[9px] text-emerald-600 font-bold uppercase">
+        <div className="flex items-center gap-1 text-[9px] text-accent-foreground font-bold uppercase">
           Verified <CheckCircle2 className="w-3 h-3" />
         </div>
       </div>
@@ -125,7 +125,7 @@ function FinesChoice({ onChoice }: { onChoice: (choice: 'online' | 'actual') => 
     <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
       <button
         onClick={() => onChoice('online')}
-        className="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50 transition-all group"
+        className="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-2xl hover:border-accent hover:bg-accent/10 transition-all group"
       >
         <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
           <Smartphone className="w-6 h-6" />
@@ -134,21 +134,21 @@ function FinesChoice({ onChoice }: { onChoice: (choice: 'online' | 'actual') => 
           <p className="text-sm font-bold text-slate-900">Online Payment</p>
           <p className="text-[10px] text-slate-400 font-bold uppercase">Via GCash</p>
         </div>
-        <ChevronRight className="w-4 h-4 ml-auto text-slate-300 group-hover:text-emerald-500" />
+        <ChevronRight className="w-4 h-4 ml-auto text-slate-300 group-hover:text-accent" />
       </button>
 
       <button
         onClick={() => onChoice('actual')}
-        className="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:bg-emerald-50 transition-all group"
+        className="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-2xl hover:border-accent hover:bg-accent/10 transition-all group"
       >
-        <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
+        <div className="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center text-accent-foreground group-hover:scale-110 transition-transform">
           <Users className="w-6 h-6" />
         </div>
         <div className="text-left">
           <p className="text-sm font-bold text-slate-900">Actual Payment</p>
           <p className="text-[10px] text-slate-400 font-bold uppercase">At Cashier</p>
         </div>
-        <ChevronRight className="w-4 h-4 ml-auto text-slate-300 group-hover:text-emerald-500" />
+        <ChevronRight className="w-4 h-4 ml-auto text-slate-300 group-hover:text-accent" />
       </button>
     </div>
   );
@@ -159,7 +159,7 @@ function PriorityNumberCard({ number }: { number: number }) {
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="my-4 bg-gradient-to-br from-emerald-600 to-emerald-500 rounded-[32px] p-8 text-white shadow-xl shadow-emerald-200/50 relative overflow-hidden"
+      className="my-4 bg-gradient-to-br from-accent to-accent-hover rounded-[32px] p-8 text-slate-900 shadow-xl shadow-accent/20 relative overflow-hidden"
     >
       <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
       <div className="relative z-10 text-center">
@@ -429,7 +429,7 @@ export function StudentChatbot() {
               <div
                 className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center ${msg.role === 'user'
                   ? 'bg-slate-100 text-slate-500'
-                  : 'bg-emerald-500 text-white shadow-lg shadow-emerald-200'
+                  : 'bg-accent text-slate-900 shadow-lg shadow-accent/20'
                   }`}
               >
                 {msg.role === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
@@ -440,7 +440,7 @@ export function StudentChatbot() {
                   : 'bg-white text-slate-700 rounded-tl-none shadow-sm border border-slate-100'
                   }`}
               >
-                <div className="text-sm leading-relaxed prose prose-sm prose-emerald max-w-none">
+                <div className="text-sm leading-relaxed prose prose-sm prose-slate max-w-none">
                   {renderContent(msg)}
                 </div>
               </div>
@@ -452,13 +452,13 @@ export function StudentChatbot() {
               animate={{ opacity: 1, y: 0 }}
               className="flex gap-4"
             >
-              <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-200">
+              <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-accent text-slate-900 flex items-center justify-center shadow-lg shadow-accent/20">
                 <Bot className="w-5 h-5" />
               </div>
               <div className="bg-white text-slate-700 rounded-[32px] rounded-tl-none px-8 py-5 shadow-sm border border-slate-100 flex items-center gap-1.5">
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             </motion.div>
           )}
@@ -473,23 +473,23 @@ export function StudentChatbot() {
           <div className="flex flex-wrap gap-3">
             <button
               onClick={() => setInput("How can I pay my enrollment fees?")}
-              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-200 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
+              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-accent/10 text-slate-600 hover:text-accent-foreground border border-slate-200 hover:border-accent/40 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
             >
-              <CreditCard className="w-4 h-4 text-emerald-500" />
+              <CreditCard className="w-4 h-4 text-accent" />
               How to Pay
             </button>
             <button
               onClick={() => setInput("I have pending admin fines, what should I do?")}
-              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-200 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
+              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-accent/10 text-slate-600 hover:text-accent-foreground border border-slate-200 hover:border-accent/40 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
             >
-              <Smartphone className="w-4 h-4 text-emerald-500" />
+              <Smartphone className="w-4 h-4 text-accent" />
               Settle Fines
             </button>
             <Link
               href="/dashboard/request"
-              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 border border-slate-200 hover:border-emerald-200 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
+              className="flex items-center gap-2 text-xs font-medium bg-white hover:bg-accent/10 text-slate-600 hover:text-accent-foreground border border-slate-200 hover:border-accent/40 px-4 py-2 rounded-2xl transition-all shadow-sm hover:shadow-md active:scale-95"
             >
-              <FileText className="w-4 h-4 text-emerald-500" />
+              <FileText className="w-4 h-4 text-accent" />
               Request Documents
             </Link>
           </div>
@@ -508,14 +508,14 @@ export function StudentChatbot() {
                 }
               }}
               placeholder="Ask about payments, fines, or documents..."
-              className="w-full max-h-32 min-h-[72px] px-8 py-6 bg-slate-50 border border-slate-100 rounded-[32px] text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all duration-300 resize-none scrollbar-hide"
+              className="w-full max-h-32 min-h-[72px] px-8 py-6 bg-slate-50 border border-slate-100 rounded-[32px] text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-accent/10 focus:border-accent transition-all duration-300 resize-none scrollbar-hide"
               rows={1}
             />
           </div>
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="flex-shrink-0 flex items-center justify-center w-20 h-20 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-100 disabled:text-slate-300 text-white rounded-[32px] transition-all shadow-xl shadow-emerald-200/50 active:scale-95"
+            className="flex-shrink-0 flex items-center justify-center w-20 h-20 bg-accent hover:bg-accent-hover disabled:bg-slate-100 disabled:text-slate-300 text-slate-900 rounded-[32px] transition-all shadow-xl shadow-accent/20 active:scale-95"
           >
             <Send className="w-8 h-8 ml-1" />
           </button>

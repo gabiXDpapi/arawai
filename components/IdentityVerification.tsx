@@ -13,7 +13,7 @@ export function IdentityVerification({ idFile, onFileChange, onNext, onPrev }: I
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <motion.div 
+    <motion.div
       key="step2"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -25,29 +25,28 @@ export function IdentityVerification({ idFile, onFileChange, onNext, onPrev }: I
         <p className="text-slate-500">Please upload a clear photo of your valid Student ID or any Government ID.</p>
       </div>
 
-      <div 
-        className={`border-2 border-dashed rounded-3xl p-10 text-center transition-all ${
-          idFile ? 'border-emerald-500 bg-emerald-50/30 shadow-inner' : 'border-slate-300 hover:border-emerald-400 bg-slate-50/50'
-        }`}
+      <div
+        className={`border-2 border-dashed rounded-3xl p-10 text-center transition-all ${idFile ? 'border-accent bg-accent/10 shadow-inner' : 'border-slate-300 hover:border-accent bg-slate-50/50'
+          }`}
       >
-        <input 
-          type="file" 
+        <input
+          type="file"
           ref={fileInputRef}
           onChange={onFileChange}
           accept="image/*"
-          className="hidden" 
+          className="hidden"
         />
-        
+
         {idFile ? (
           <div className="flex flex-col items-center">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-500 rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+            <div className="w-16 h-16 bg-accent/20 text-accent-foreground rounded-2xl flex items-center justify-center mb-4 shadow-sm">
               <CheckCircle className="w-8 h-8" />
             </div>
             <p className="font-bold text-slate-900 mb-1">{idFile.name}</p>
             <p className="text-sm text-slate-500 mb-6">{(idFile.size / 1024 / 1024).toFixed(2)} MB</p>
-            <button 
+            <button
               onClick={() => fileInputRef.current?.click()}
-              className="text-sm font-bold text-emerald-500 hover:text-emerald-600 transition-colors"
+              className="text-sm font-bold text-accent-foreground hover:text-accent-hover transition-colors"
             >
               Upload a different file
             </button>
@@ -59,9 +58,9 @@ export function IdentityVerification({ idFile, onFileChange, onNext, onPrev }: I
             </div>
             <p className="font-bold text-slate-900 mb-2">Click to upload or drag and drop</p>
             <p className="text-sm text-slate-500 mb-6">SVG, PNG, JPG or GIF (max. 5MB)</p>
-            <button 
+            <button
               onClick={() => fileInputRef.current?.click()}
-              className="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 hover:border-emerald-200 transition-all shadow-sm"
+              className="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 hover:border-accent transition-all shadow-sm"
             >
               Select File
             </button>
@@ -70,16 +69,16 @@ export function IdentityVerification({ idFile, onFileChange, onNext, onPrev }: I
       </div>
 
       <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
-        <button 
+        <button
           onClick={onPrev}
           className="px-6 py-3 text-slate-600 font-bold rounded-2xl hover:bg-slate-100 transition-colors flex items-center gap-2"
         >
           <ChevronLeft className="w-5 h-5" /> Back
         </button>
-        <button 
+        <button
           onClick={onNext}
           disabled={!idFile}
-          className="px-6 py-3 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-600 transition-all shadow-sm hover:shadow-emerald-200/50 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-6 py-3 bg-accent text-slate-900 font-bold rounded-2xl hover:bg-accent-hover transition-all shadow-sm hover:shadow-accent/20 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           Continue <ChevronRight className="w-5 h-5" />
         </button>

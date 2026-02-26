@@ -14,7 +14,7 @@ interface PaymentMethodProps {
 
 export function PaymentMethod({ selectedDocs, totalAmount, paymentMethod, setPaymentMethod, onNext, onPrev }: PaymentMethodProps) {
   return (
-    <motion.div 
+    <motion.div
       key="step3"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -41,20 +41,18 @@ export function PaymentMethod({ selectedDocs, totalAmount, paymentMethod, setPay
         </div>
         <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
           <span className="font-bold text-slate-900">Total to pay</span>
-          <span className="text-3xl font-black text-emerald-500">₱{totalAmount.toFixed(2)}</span>
+          <span className="text-3xl font-black text-accent-foreground">₱{totalAmount.toFixed(2)}</span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div 
+        <div
           onClick={() => setPaymentMethod('online')}
-          className={`p-6 rounded-3xl border-2 cursor-pointer transition-all flex flex-col items-center text-center gap-4 ${
-            paymentMethod === 'online' ? 'border-emerald-500 bg-emerald-50/50 shadow-sm shadow-emerald-100' : 'border-slate-200 hover:border-emerald-200 hover:bg-slate-50'
-          }`}
+          className={`p-6 rounded-3xl border-2 cursor-pointer transition-all flex flex-col items-center text-center gap-4 ${paymentMethod === 'online' ? 'border-accent bg-accent/10 shadow-sm shadow-accent/10' : 'border-slate-200 hover:border-accent hover:bg-slate-50'
+            }`}
         >
-          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${
-            paymentMethod === 'online' ? 'bg-emerald-500 text-white shadow-emerald-200/50' : 'bg-white border border-slate-200 text-slate-400'
-          }`}>
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${paymentMethod === 'online' ? 'bg-accent text-slate-900 shadow-accent/20' : 'bg-white border border-slate-200 text-slate-400'
+            }`}>
             <CreditCard className="w-7 h-7" />
           </div>
           <div>
@@ -63,15 +61,13 @@ export function PaymentMethod({ selectedDocs, totalAmount, paymentMethod, setPay
           </div>
         </div>
 
-        <div 
+        <div
           onClick={() => setPaymentMethod('manual')}
-          className={`p-6 rounded-3xl border-2 cursor-pointer transition-all flex flex-col items-center text-center gap-4 ${
-            paymentMethod === 'manual' ? 'border-emerald-500 bg-emerald-50/50 shadow-sm shadow-emerald-100' : 'border-slate-200 hover:border-emerald-200 hover:bg-slate-50'
-          }`}
+          className={`p-6 rounded-3xl border-2 cursor-pointer transition-all flex flex-col items-center text-center gap-4 ${paymentMethod === 'manual' ? 'border-accent bg-accent/10 shadow-sm shadow-accent/10' : 'border-slate-200 hover:border-accent hover:bg-slate-50'
+            }`}
         >
-          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${
-            paymentMethod === 'manual' ? 'bg-emerald-500 text-white shadow-emerald-200/50' : 'bg-white border border-slate-200 text-slate-400'
-          }`}>
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${paymentMethod === 'manual' ? 'bg-accent text-slate-900 shadow-accent/20' : 'bg-white border border-slate-200 text-slate-400'
+            }`}>
             <Banknote className="w-7 h-7" />
           </div>
           <div>
@@ -82,16 +78,16 @@ export function PaymentMethod({ selectedDocs, totalAmount, paymentMethod, setPay
       </div>
 
       <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between">
-        <button 
+        <button
           onClick={onPrev}
           className="px-6 py-3 text-slate-600 font-bold rounded-2xl hover:bg-slate-100 transition-colors flex items-center gap-2"
         >
           <ChevronLeft className="w-5 h-5" /> Back
         </button>
-        <button 
+        <button
           onClick={onNext}
           disabled={!paymentMethod}
-          className="px-6 py-3 bg-emerald-500 text-white font-bold rounded-2xl hover:bg-emerald-600 transition-all shadow-sm hover:shadow-emerald-200/50 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="px-6 py-3 bg-accent text-slate-900 font-bold rounded-2xl hover:bg-accent-hover transition-all shadow-sm hover:shadow-accent/20 hover:shadow-xl active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         >
           Confirm Request <ChevronRight className="w-5 h-5" />
         </button>

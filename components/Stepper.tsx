@@ -22,7 +22,7 @@ export function Stepper({ currentStep, steps }: StepperProps) {
 
                 {/* Animated Connection Line */}
                 <motion.div
-                    className="absolute top-1/2 left-0 h-0.5 bg-emerald-500 -translate-y-1/2 z-0"
+                    className="absolute top-1/2 left-0 h-0.5 bg-accent -translate-y-1/2 z-0"
                     initial={{ width: '0%' }}
                     animate={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
                     transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -37,11 +37,11 @@ export function Stepper({ currentStep, steps }: StepperProps) {
                             <motion.div
                                 initial={false}
                                 animate={{
-                                    backgroundColor: isCompleted || isActive ? '#10b981' : '#f8fafc',
+                                    backgroundColor: isCompleted || isActive ? '#fece00' : '#f8fafc',
                                     scale: isActive ? 1.2 : 1,
-                                    boxShadow: isActive ? '0 10px 15px -3px rgba(16, 185, 129, 0.2)' : 'none'
+                                    boxShadow: isActive ? '0 10px 15px -3px rgba(254, 206, 0, 0.2)' : 'none'
                                 }}
-                                className={`w-10 h-10 rounded-2xl flex items-center justify-center border-2 transition-colors duration-300 ${isCompleted || isActive ? 'border-emerald-500' : 'border-slate-200'
+                                className={`w-10 h-10 rounded-2xl flex items-center justify-center border-2 transition-colors duration-300 ${isCompleted || isActive ? 'border-accent' : 'border-slate-200'
                                     }`}
                             >
                                 {isCompleted ? (
@@ -50,16 +50,16 @@ export function Stepper({ currentStep, steps }: StepperProps) {
                                         animate={{ scale: 1 }}
                                         transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                     >
-                                        <Check className="w-5 h-5 text-white" />
+                                        <Check className="w-5 h-5 text-slate-900" />
                                     </motion.div>
                                 ) : (
-                                    <span className={`text-sm font-black ${isActive ? 'text-white' : 'text-slate-400'}`}>
+                                    <span className={`text-sm font-black ${isActive ? 'text-slate-900' : 'text-slate-400'}`}>
                                         {step.id}
                                     </span>
                                 )}
                             </motion.div>
                             <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-center">
-                                <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isActive ? 'text-emerald-600' : isCompleted ? 'text-slate-400' : 'text-slate-300'
+                                <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isActive ? 'text-accent-foreground' : isCompleted ? 'text-slate-400' : 'text-slate-300'
                                     }`}>
                                     {step.title}
                                 </span>
