@@ -32,6 +32,9 @@ export default function DashboardPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showManualSuccess, setShowManualSuccess] = useState(false);
+  const [userTicket, setUserTicket] = useState<number | null>(null);
+  const [nextTicketNumber, setNextTicketNumber] = useState(155);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -277,12 +280,25 @@ export default function DashboardPage() {
                   <h2 className="text-lg font-bold uppercase tracking-widest opacity-90">Cash Division</h2>
                 </div>
 
-                <div className="text-center mb-8">
-                  <p className="text-sm font-medium opacity-80 mb-2">Current Priority Number</p>
-                  <div className="text-7xl font-black tracking-tighter mb-2">{priorityNumber}</div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-widest">
-                    <Clock className="w-3 h-3" /> Estimated Wait: 15 mins
+                <div className="text-center mb-8 text-white">
+                  <p className="text-sm font-medium opacity-80 mb-2">
+                    {userTicket ? 'Your Priority Number' : 'Current Priority Number'}
+                  </p>
+                  <div className="text-7xl font-black tracking-tighter mb-2">
+                    {userTicket || priorityNumber}
                   </div>
+                  {userTicket ? (
+                    <div className="inline-flex flex-col items-center gap-1">
+                      <div className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                        <Users className="w-3 h-3" /> Now Serving: #{priorityNumber}
+                      </div>
+                      <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest mt-2">{userTicket - priorityNumber} people ahead of you</p>
+                    </div>
+                  ) : (
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-bold uppercase tracking-widest">
+                      <Clock className="w-3 h-3" /> Estimated Wait: 15 mins
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-3">
@@ -514,7 +530,15 @@ export default function DashboardPage() {
                       </button>
                       {selectedItem.status === 'To Pay' ? (
                         <>
-                          <button className="flex-1 py-4 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => {
+                              setUserTicket(nextTicketNumber);
+                              setNextTicketNumber(prev => prev + 1);
+                              setShowManualSuccess(true);
+                              setSelectedItem(null);
+                            }}
+                            className="flex-1 py-4 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2"
+                          >
                             <MapPin className="w-4 h-4" /> Manual
                           </button>
                           <button
@@ -575,6 +599,78 @@ export default function DashboardPage() {
               >
                 Got it, thanks!
               </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Manual Success Ticket Modal */}
+      <AnimatePresence>
+        {showManualSuccess && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowManualSuccess(false)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+            />
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 40 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 40 }}
+              className="relative w-full max-w-sm bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-100 flex flex-col"
+            >
+              <div className="p-8 bg-slate-900 text-white text-center relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
+                  <Users className="w-8 h-8" />
+                </div>
+                <h3 className="text-xl font-black uppercase tracking-[0.2em]">Queue Ticket</h3>
+                <p className="text-[10px] text-white/50 font-bold uppercase tracking-widest mt-1">Cash Division • Manual Payment</p>
+              </div>
+
+              <div className="p-8 space-y-8 bg-white text-center">
+                <div>
+                  <p className="text-[11px] text-slate-400 font-black uppercase tracking-widest mb-2">Your Priority Number</p>
+                  <div className="text-7xl font-black text-slate-900 tracking-tighter">
+                    {userTicket}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 italic">
+                  <Clock className="w-5 h-5 text-slate-400" />
+                  <div className="text-left">
+                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Est. Serving Time</p>
+                    <p className="text-sm font-bold text-slate-900">Approximately 25 mins</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-4 border-t border-dashed border-slate-200">
+                  <div className="flex justify-between text-xs font-bold text-slate-900">
+                    <span className="text-slate-400">Transaction ID</span>
+                    <span>#ARW-QN-{userTicket}</span>
+                  </div>
+                  <div className="flex justify-between text-xs font-bold text-slate-900">
+                    <span className="text-slate-400">Counter Window</span>
+                    <span>Window 2-4</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8 pt-0 bg-white">
+                <button
+                  onClick={() => setShowManualSuccess(false)}
+                  className="w-full py-4 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95 text-xs uppercase tracking-widest"
+                >
+                  Done, Proceed to Cashier
+                </button>
+                <div className="mt-4 flex justify-between px-2 relative">
+                  <div className="absolute -left-10 top-0 w-6 h-6 bg-slate-50 rounded-full border border-slate-100"></div>
+                  <div className="absolute -right-10 top-0 w-6 h-6 bg-slate-50 rounded-full border border-slate-100"></div>
+                </div>
+              </div>
             </motion.div>
           </div>
         )}
