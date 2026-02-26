@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react';
 import favicon from '../app/favicon.png';
 import Image from 'next/image';
 
 export function LoginForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,11 +16,15 @@ export function LoginForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
+    
     setIsLoading(true);
-    // Simulate login
+    
+    // Immediate navigation for better reliability in preview environment
+    // We still show the loader briefly for UX
     setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+      router.push('/dashboard');
+    }, 800);
   };
 
   return (
@@ -116,7 +122,7 @@ export function LoginForm() {
           </div>
         </form>
 
-        <div className="mt-8 pt-6 border-t border-slate-100 text-center">
+        <div className="mt-8 pt-6 border-t border-slate-100 text-center space-y-4">
           <p className="text-sm text-slate-500">
             Need access?{' '}
             <a href="#" className="font-medium text-slate-900 hover:text-emerald-600 transition-colors relative inline-block">
@@ -124,6 +130,13 @@ export function LoginForm() {
               <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-amber-400 rounded-full scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></span>
             </a>
           </p>
+          <button 
+            type="button"
+            onClick={() => router.push('/dashboard')}
+            className="text-xs font-bold text-emerald-600 hover:underline uppercase tracking-widest"
+          >
+            Demo Login (Bypass)
+          </button>
         </div>
       </motion.div>
 

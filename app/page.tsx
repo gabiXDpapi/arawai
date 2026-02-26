@@ -1,22 +1,13 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Chatbot } from '@/components/chatbot';
+import Link from 'next/link';
 import { LogIn, ShieldCheck, Loader2 } from 'lucide-react';
 import favicon from './favicon.png';
 import Image from 'next/image';
 
 export default function LandingPage() {
-  const router = useRouter();
-  const [isNavigating, setIsNavigating] = useState(false);
-
-  const handleLoginClick = () => {
-    setIsNavigating(true);
-    router.push('/login');
-  };
-
   return (
     <main className="min-h-screen bg-slate-50 relative overflow-hidden flex flex-col">
       {/* Abstract Background Elements */}
@@ -39,20 +30,13 @@ export default function LandingPage() {
           </h1>
         </div>
 
-        <button
-          onClick={handleLoginClick}
-          disabled={isNavigating}
-          className="group flex items-center gap-3 bg-white hover:bg-emerald-500 text-slate-700 hover:text-white font-bold py-3 px-6 rounded-2xl border border-slate-200 hover:border-emerald-500 transition-all duration-300 shadow-sm hover:shadow-emerald-200/50 hover:shadow-xl active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+        <Link
+          href="/login"
+          className="group flex items-center gap-3 bg-white hover:bg-emerald-500 text-slate-700 hover:text-white font-bold py-3 px-6 rounded-2xl border border-slate-200 hover:border-emerald-500 transition-all duration-300 shadow-sm hover:shadow-emerald-200/50 hover:shadow-xl active:scale-95"
         >
-          {isNavigating ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
-          ) : (
-            <>
-              <span className="text-sm">Student Login</span>
-              <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </>
-          )}
-        </button>
+          <span className="text-sm">Student Login</span>
+          <LogIn className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+        </Link>
       </header>
 
       {/* Main Content */}

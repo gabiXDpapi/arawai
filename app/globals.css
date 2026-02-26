@@ -1,15 +1,2 @@
 @import "tailwindcss";
-
-@layer utilities {
-  .scrollbar-hide {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none; /* Chrome, Safari and Opera */
-  }
-}
-
-body {
-  @apply selection:bg-emerald-100 selection:text-emerald-900;
-}
+@import "tw-animate-css";
