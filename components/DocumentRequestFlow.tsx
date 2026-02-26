@@ -7,6 +7,7 @@ import { DocumentSelection, DOCUMENT_TYPES } from './DocumentSelection';
 import { IdentityVerification } from './IdentityVerification';
 import { PaymentMethod } from './PaymentMethod';
 import { RequestComplete } from './RequestComplete';
+import { GCashPayment } from './GCashPayment';
 
 const STEPS = [
     { id: 1, title: 'Documents' },
@@ -21,6 +22,7 @@ export function DocumentRequestFlow() {
     const [idFile, setIdFile] = useState<File | null>(null);
     const [paymentMethod, setPaymentMethod] = useState<'online' | 'manual' | null>(null);
     const [priorityNumber, setPriorityNumber] = useState<string | null>(null);
+    const [showGCash, setShowGCash] = useState(false);
 
     const totalAmount = useMemo(() => {
         return selectedDocs.reduce((sum, docId) => {
@@ -43,9 +45,14 @@ export function DocumentRequestFlow() {
 
     const nextStep = () => {
         if (currentStep === 3) {
+            if (paymentMethod === 'online' && !showGCash) {
+                setShowGCash(true);
+                return;
+            }
             // Generate random priority number on completion
             const randomNum = Math.floor(Math.random() * 900) + 100;
             setPriorityNumber(randomNum.toString());
+            setShowGCash(false);
         }
         setCurrentStep(prev => prev + 1);
     };
@@ -58,6 +65,7 @@ export function DocumentRequestFlow() {
         setIdFile(null);
         setPaymentMethod(null);
         setPriorityNumber(null);
+        setShowGCash(false);
     };
 
     return (
@@ -87,14 +95,22 @@ export function DocumentRequestFlow() {
                         />
                     )}
                     {currentStep === 3 && (
-                        <PaymentMethod
-                            selectedDocs={selectedDocs}
-                            totalAmount={totalAmount}
-                            paymentMethod={paymentMethod}
-                            setPaymentMethod={setPaymentMethod}
-                            onNext={nextStep}
-                            onPrev={prevStep}
-                        />
+                        !showGCash ? (
+                            <PaymentMethod
+                                selectedDocs={selectedDocs}
+                                totalAmount={totalAmount}
+                                paymentMethod={paymentMethod}
+                                setPaymentMethod={setPaymentMethod}
+                                onNext={nextStep}
+                                onPrev={prevStep}
+                            />
+                        ) : (
+                            <GCashPayment
+                                totalAmount={totalAmount}
+                                onSubmit={nextStep}
+                                onBack={() => setShowGCash(false)}
+                            />
+                        )
                     )}
                     {currentStep === 4 && (
                         <RequestComplete
