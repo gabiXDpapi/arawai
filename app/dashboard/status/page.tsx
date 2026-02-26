@@ -23,12 +23,14 @@ import {
   RefreshCw
 } from 'lucide-react';
 import Link from 'next/link';
+import { GCashPayment } from '@/components/GCashPayment';
 
 export default function DashboardPage() {
   const [priorityNumber, setPriorityNumber] = useState(142);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -92,7 +94,7 @@ export default function DashboardPage() {
     },
     {
       id: 3,
-      title: 'Enrollment Fees',
+      title: 'Admin Fees',
       status: 'To Pay',
       description: 'Pending payment for the current semester. Please settle at the Cashier.',
       icon: CreditCard,
@@ -102,12 +104,11 @@ export default function DashboardPage() {
       details: {
         number: 'SEM-2026-2',
         period: 'Second Semester 2025-2026',
-        amount: '₱24,800.00',
+        amount: '₱500.000',
         dueDate: 'March 15, 2026',
         breakdown: [
-          { name: 'Tuition Fees', value: '₱18,500.00' },
-          { name: 'Miscellaneous', value: '₱4,200.00' },
-          { name: 'Laboratory Fees', value: '₱2,100.00' }
+          { name: 'Library Fees', value: '₱250.00' },
+          { name: 'Late Enrollment Fee', value: '₱250.00' }
         ]
       }
     },
@@ -207,7 +208,10 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all group cursor-pointer"
-                    onClick={() => setSelectedItem(item)}
+                    onClick={() => {
+                      setSelectedItem(item);
+                      setShowPayment(false);
+                    }}
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className={`w-12 h-12 ${item.lightColor} rounded-2xl flex items-center justify-center ${item.textColor} group-hover:scale-110 transition-transform`}>
@@ -333,175 +337,201 @@ export default function DashboardPage() {
               exit={{ opacity: 0, scale: 0.9, y: 40 }}
               className="relative w-full max-w-lg bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-100 flex flex-col"
             >
-              {/* Modal Header */}
-              <div className={`p-8 ${selectedItem.lightColor} relative`}>
-                <button
-                  onClick={() => setSelectedItem(null)}
-                  className="absolute top-6 right-6 p-2 bg-white/50 hover:bg-white rounded-xl text-slate-500 hover:text-slate-900 transition-all z-10"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+              {showPayment ? (
+                <GCashPayment
+                  totalAmount={parseFloat(selectedItem.details.amount.replace('₱', '').replace(',', ''))}
+                  onBack={() => setShowPayment(false)}
+                  onSubmit={() => {
+                    // Update status locally for feedback
+                    selectedItem.status = 'Processing';
+                    // Re-sync with sidebar or external state if needed
+                    setShowPayment(false);
+                    setSelectedItem(null);
+                  }}
+                />
+              ) : (
+                <>
+                  {/* Modal Header */}
+                  <div className={`p-8 ${selectedItem.lightColor} relative`}>
+                    <button
+                      onClick={() => setSelectedItem(null)}
+                      className="absolute top-6 right-6 p-2 bg-white/50 hover:bg-white rounded-xl text-slate-500 hover:text-slate-900 transition-all z-10"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
 
-                <div className="flex items-center gap-5 mb-6 relative z-0">
-                  <div className={`w-16 h-16 ${selectedItem.color} rounded-[24px] flex items-center justify-center text-white shadow-xl shadow-slate-200/50 rotate-3`}>
-                    <selectedItem.icon className="w-8 h-8 -rotate-3" />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black text-slate-900 leading-tight">{selectedItem.title}</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 ${selectedItem.color} text-white rounded-lg`}>
-                        {selectedItem.status}
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                        {selectedItem.details.number}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-sm text-slate-600 font-medium leading-relaxed">
-                  {selectedItem.description}
-                </p>
-              </div>
-
-              {/* Modal Body */}
-              <div className="p-8 space-y-6 max-h-[50vh] overflow-y-auto">
-                {selectedItem.id === 1 && (
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="p-5 bg-slate-50 rounded-[24px] border border-slate-100">
-                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 italic">Total Paid</p>
-                        <p className="text-xl font-black text-slate-900">{selectedItem.details.amount}</p>
+                    <div className="flex items-center gap-5 mb-6 relative z-0">
+                      <div className={`w-16 h-16 ${selectedItem.color} rounded-[24px] flex items-center justify-center text-white shadow-xl shadow-slate-200/50 rotate-3`}>
+                        <selectedItem.icon className="w-8 h-8 -rotate-3" />
                       </div>
-                      <div className="p-5 bg-slate-50 rounded-[24px] border border-slate-100">
-                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 italic">Channel</p>
-                        <p className="text-xl font-black text-slate-900">{selectedItem.details.method}</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2 px-1">
-                        <Clock className="w-3 h-3" /> Status Timeline
-                      </h4>
-                      <div className="space-y-4 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
-                        {selectedItem.details.timeline.map((step: any, i: number) => (
-                          <div key={i} className="flex items-start gap-4 relative z-10">
-                            <div className={`w-6 h-6 rounded-full flex items-center justify-center border-4 border-white shadow-sm ${step.completed ? 'bg-green-500 text-white' : 'bg-slate-200 text-white'}`}>
-                              <CheckCircle2 className="w-3 h-3" />
-                            </div>
-                            <div className="flex-1">
-                              <p className={`text-sm font-bold ${step.completed ? 'text-slate-900' : 'text-slate-400'}`}>{step.label}</p>
-                              <p className="text-[10px] text-slate-400">{step.date}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {selectedItem.id === 2 && (
-                  <div className="space-y-6">
-                    <div className="space-y-3">
-                      <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-1">Included Documents</h4>
-                      {selectedItem.details.items.map((doc: string, i: number) => (
-                        <div key={i} className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:border-accent/20 transition-all cursor-default">
-                          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-accent shadow-sm">
-                            <FileText className="w-5 h-5" />
-                          </div>
-                          <p className="text-sm font-bold text-slate-900">{doc}</p>
+                      <div>
+                        <h3 className="text-2xl font-black text-slate-900 leading-tight">{selectedItem.title}</h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 ${selectedItem.color} text-white rounded-lg`}>
+                            {selectedItem.status}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                            {selectedItem.details.number}
+                          </span>
                         </div>
-                      ))}
-                    </div>
-                    <div className="p-5 bg-accent/5 border-2 border-dashed border-accent/20 rounded-3xl flex items-center gap-4 text-accent-foreground">
-                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-accent/10">
-                        <MapPin className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] opacity-70 font-black uppercase tracking-widest">Collector Window</p>
-                        <p className="text-sm font-black">{selectedItem.details.location}</p>
                       </div>
                     </div>
+                    <p className="text-sm text-slate-600 font-medium leading-relaxed">
+                      {selectedItem.description}
+                    </p>
                   </div>
-                )}
 
-                {selectedItem.id === 3 && (
-                  <div className="space-y-6">
-                    <div className="p-8 bg-amber-50 rounded-[32px] border border-amber-100 text-center relative overflow-hidden">
-                      <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-200/20 rounded-full blur-2xl"></div>
-                      <p className="text-[10px] text-amber-600 font-black uppercase tracking-widest mb-2">Total Balance Due</p>
-                      <p className="text-4xl font-black text-amber-700">{selectedItem.details.amount}</p>
-                      <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-amber-600 text-white rounded-full text-[10px] font-black uppercase tracking-widest">
-                        <Calendar className="w-3 h-3" /> {selectedItem.details.dueDate}
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-1 italic">Payment Details</h4>
-                      <div className="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-50">
-                        {selectedItem.details.breakdown.map((fee: any, i: number) => (
-                          <div key={i} className="flex justify-between p-4 px-6">
-                            <span className="text-sm font-medium text-slate-500">{fee.name}</span>
-                            <span className="text-sm font-bold text-slate-900">{fee.value}</span>
+                  {/* Modal Body */}
+                  <div className="p-8 space-y-6 max-h-[50vh] overflow-y-auto">
+                    {selectedItem.id === 1 && (
+                      <div className="space-y-6">
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="p-5 bg-slate-50 rounded-[24px] border border-slate-100">
+                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 italic">Total Paid</p>
+                            <p className="text-xl font-black text-slate-900">{selectedItem.details.amount}</p>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {selectedItem.id === 4 && (
-                  <div className="space-y-6">
-                    <div className="p-6 bg-indigo-50 rounded-[32px] border border-indigo-100 flex items-center justify-between">
-                      <div>
-                        <p className="text-[10px] text-indigo-500 font-black uppercase tracking-widest mb-1 italic">Verification Status</p>
-                        <p className="text-xl font-black text-indigo-900">Processing</p>
-                      </div>
-                      <div className="px-4 py-2 bg-white rounded-2xl shadow-sm border border-indigo-100">
-                        <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest text-center">EST. WAIT</p>
-                        <p className="text-sm font-black text-indigo-600 text-center">{selectedItem.details.estimatedDays}</p>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-1 italic">Submission Details</p>
-                      <div className="bg-white rounded-3xl border border-slate-100 divide-y divide-slate-50 overflow-hidden">
-                        {selectedItem.details.documents.map((doc: any, i: number) => (
-                          <div key={i} className="flex justify-between items-center p-4 px-6 hover:bg-slate-50 transition-colors">
-                            <span className="text-sm font-bold text-slate-700">{doc.name}</span>
-                            <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${doc.status === 'Verified' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
-                              {doc.status}
-                            </span>
+                          <div className="p-5 bg-slate-50 rounded-[24px] border border-slate-100">
+                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mb-1 italic">Channel</p>
+                            <p className="text-xl font-black text-slate-900">{selectedItem.details.method}</p>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl flex gap-3">
-                      <AlertCircle className="w-5 h-5 text-blue-500 shrink-0" />
-                      <p className="text-xs font-medium text-blue-700 leading-relaxed">
-                        We will notify you once all documents are verified. Please keep your original copies ready.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
+                        </div>
 
-              {/* Modal Footer */}
-              <div className="p-8 pt-0 bg-white">
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setSelectedItem(null)}
-                    className="flex-1 py-4 bg-slate-100 text-slate-600 font-black rounded-2xl hover:bg-slate-200 transition-all active:scale-95 text-xs uppercase tracking-widest"
-                  >
-                    Dismiss
-                  </button>
-                  <button className={`flex-[1.5] py-4 ${selectedItem.color} text-white font-black rounded-2xl shadow-xl hover:brightness-110 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2`}>
-                    {selectedItem.status === 'To Pay' ? (
-                      <><CreditCard className="w-4 h-4" /> Pay Online</>
-                    ) : (
-                      <><ExternalLink className="w-4 h-4" /> View Full Details</>
+                        <div className="space-y-3">
+                          <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest flex items-center gap-2 px-1">
+                            <Clock className="w-3 h-3" /> Status Timeline
+                          </h4>
+                          <div className="space-y-4 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
+                            {selectedItem.details.timeline.map((step: any, i: number) => (
+                              <div key={i} className="flex items-start gap-4 relative z-10">
+                                <div className={`w-6 h-6 rounded-full flex items-center justify-center border-4 border-white shadow-sm ${step.completed ? 'bg-green-500 text-white' : 'bg-slate-200 text-white'}`}>
+                                  <CheckCircle2 className="w-3 h-3" />
+                                </div>
+                                <div className="flex-1">
+                                  <p className={`text-sm font-bold ${step.completed ? 'text-slate-900' : 'text-slate-400'}`}>{step.label}</p>
+                                  <p className="text-[10px] text-slate-400">{step.date}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     )}
-                  </button>
-                </div>
-                <p className="text-[10px] text-center text-slate-400 mt-6 font-bold uppercase tracking-[0.2em]">ARAW.ai Security Verified</p>
-              </div>
+
+                    {selectedItem.id === 2 && (
+                      <div className="space-y-6">
+                        <div className="space-y-3">
+                          <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-1">Included Documents</h4>
+                          {selectedItem.details.items.map((doc: string, i: number) => (
+                            <div key={i} className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:border-accent/20 transition-all cursor-default">
+                              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-accent shadow-sm">
+                                <FileText className="w-5 h-5" />
+                              </div>
+                              <p className="text-sm font-bold text-slate-900">{doc}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="p-5 bg-accent/5 border-2 border-dashed border-accent/20 rounded-3xl flex items-center gap-4 text-accent-foreground">
+                          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-accent/10">
+                            <MapPin className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <p className="text-[10px] opacity-70 font-black uppercase tracking-widest">Collector Window</p>
+                            <p className="text-sm font-black">{selectedItem.details.location}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedItem.id === 3 && (
+                      <div className="space-y-6">
+                        <div className="p-8 bg-amber-50 rounded-[32px] border border-amber-100 text-center relative overflow-hidden">
+                          <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-200/20 rounded-full blur-2xl"></div>
+                          <p className="text-[10px] text-amber-600 font-black uppercase tracking-widest mb-2">Total Balance Due</p>
+                          <p className="text-4xl font-black text-amber-700">{selectedItem.details.amount}</p>
+                          <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 bg-amber-600 text-white rounded-full text-[10px] font-black uppercase tracking-widest">
+                            <Calendar className="w-3 h-3" /> {selectedItem.details.dueDate}
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <h4 className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-1 italic">Payment Details</h4>
+                          <div className="bg-white rounded-2xl border border-slate-100 divide-y divide-slate-50">
+                            {selectedItem.details.breakdown.map((fee: any, i: number) => (
+                              <div key={i} className="flex justify-between p-4 px-6">
+                                <span className="text-sm font-medium text-slate-500">{fee.name}</span>
+                                <span className="text-sm font-bold text-slate-900">{fee.value}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedItem.id === 4 && (
+                      <div className="space-y-6">
+                        <div className="p-6 bg-indigo-50 rounded-[32px] border border-indigo-100 flex items-center justify-between">
+                          <div>
+                            <p className="text-[10px] text-indigo-500 font-black uppercase tracking-widest mb-1 italic">Verification Status</p>
+                            <p className="text-xl font-black text-indigo-900">Processing</p>
+                          </div>
+                          <div className="px-4 py-2 bg-white rounded-2xl shadow-sm border border-indigo-100">
+                            <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest text-center">EST. WAIT</p>
+                            <p className="text-sm font-black text-indigo-600 text-center">{selectedItem.details.estimatedDays}</p>
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-1 italic">Submission Details</p>
+                          <div className="bg-white rounded-3xl border border-slate-100 divide-y divide-slate-50 overflow-hidden">
+                            {selectedItem.details.documents.map((doc: any, i: number) => (
+                              <div key={i} className="flex justify-between items-center p-4 px-6 hover:bg-slate-50 transition-colors">
+                                <span className="text-sm font-bold text-slate-700">{doc.name}</span>
+                                <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-lg ${doc.status === 'Verified' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}`}>
+                                  {doc.status}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="p-4 bg-blue-50/50 border border-blue-100 rounded-2xl flex gap-3">
+                          <AlertCircle className="w-5 h-5 text-blue-500 shrink-0" />
+                          <p className="text-xs font-medium text-blue-700 leading-relaxed">
+                            We will notify you once all documents are verified. Please keep your original copies ready.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Modal Footer */}
+                  <div className="p-8 pt-0 bg-white">
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setSelectedItem(null)}
+                        className="flex-1 py-4 bg-slate-100 text-slate-600 font-black rounded-2xl hover:bg-slate-200 transition-all active:scale-95 text-xs uppercase tracking-widest"
+                      >
+                        Dismiss
+                      </button>
+                      {selectedItem.status === 'To Pay' ? (
+                        <>
+                          <button className="flex-1 py-4 bg-slate-900 text-white font-black rounded-2xl shadow-xl hover:bg-slate-800 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                            <MapPin className="w-4 h-4" /> Manual
+                          </button>
+                          <button
+                            onClick={() => setShowPayment(true)}
+                            className={`flex-1 py-4 ${selectedItem.color} text-white font-black rounded-2xl shadow-xl hover:brightness-110 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2`}
+                          >
+                            <CreditCard className="w-4 h-4" /> Online
+                          </button>
+                        </>
+                      ) : (
+                        <button className={`flex-[1.5] py-4 ${selectedItem.color} text-white font-black rounded-2xl shadow-xl hover:brightness-110 transition-all active:scale-95 text-xs uppercase tracking-widest flex items-center justify-center gap-2`}>
+                          <ExternalLink className="w-4 h-4" /> View Full Details
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-center text-slate-400 mt-6 font-bold uppercase tracking-[0.2em]">ARAW.ai Security Verified</p>
+                  </div>
+                </>
+              )}
             </motion.div>
           </div>
         )}
