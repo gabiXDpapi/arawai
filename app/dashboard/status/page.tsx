@@ -19,7 +19,8 @@ import {
   Calendar,
   MapPin,
   CheckCircle2,
-  ExternalLink
+  ExternalLink,
+  RefreshCw
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -27,11 +28,21 @@ export default function DashboardPage() {
   const [priorityNumber, setPriorityNumber] = useState(142);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    // Simulate a network request
+    setTimeout(() => {
+      setPriorityNumber(prev => Math.max(1, prev - Math.floor(Math.random() * 3)));
+      setIsRefreshing(false);
+    }, 1500);
+  };
 
   const documentStatuses = [
     {
@@ -270,10 +281,15 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="space-y-3">
-                  <button className="w-full py-4 bg-white text-accent-foreground font-black rounded-2xl shadow-lg hover:bg-slate-50 transition-all active:scale-95">
-                    Refresh Status
+                  <button
+                    onClick={handleRefresh}
+                    disabled={isRefreshing}
+                    className="w-full py-4 bg-white text-accent-foreground font-black rounded-2xl shadow-lg hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                    {isRefreshing ? 'Checking...' : 'Refresh Status'}
                   </button>
-                  <p className="text-[10px] text-center opacity-60 font-medium">Last updated: Just now</p>
+                  <p className="text-[10px] text-center opacity-60 font-medium">Last updated: {isRefreshing ? 'Updating...' : 'Just now'}</p>
                 </div>
               </div>
             </motion.section>
